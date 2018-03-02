@@ -5,14 +5,7 @@ detailing all of its resources and operations in a human and machine-readable fo
 The Swagger to Ballerina Code Generator can take existing Swagger definition files and generate Ballerina services from them.
 
 ## <a name="what-you-build"></a>  What you'll build
-You'll build an RESTful web service using an already existing OpenAPI specification.
-We will use the OpenAPI / Swagger specification of a pet store RESTful service throughout this guide. The pet store web service will support the following operations, 
-* Add new pets to the pet store via HTTP POST method
-* Retrieve existing pet details from the pet store via HTTP GET method
-* Update existing pet data in the pet store via HTTP PUT method
-* Delete existing pet data from the pet store via HTTP DELETE method
-
-Please refer to the following scenario diagram to understand the complete end-to-end scenario of the pet store web application.
+You'll build an RESTful web service using an OpenAPI / Swagger specification. The OpenAPI / Swagger specification of a pet store RESTful service throughout this guide. The pet store swagger specification will have RESSTful methods like POST,PUT,GET and DELETE methods to deal with pet data.
 
 ![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/ballerina-swagger/images/ballerina_swagger_scenario.jpg)
 
@@ -39,7 +32,7 @@ contains all the required details about the pet store RESTful API. Additionally,
 {
   "swagger": "2.0",
   "info": {
-    "description": "This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
+    "description": "This is a sample Petstore server.",
     "version": "1.0.0",
     "title": "Ballerina Petstore",
     "termsOfService": "http://ballerina.io/terms/",
@@ -508,7 +501,7 @@ ballerina run pet_store.balx
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 
-You can use the Ballerina executable archive (.balx) archive that we created above and create a docker image using either of the following commands. 
+You can use the Ballerina executable (.balx) archive that we created above and create a docker image by using the following command. 
 ```
 ballerina docker pet_store.balx  
 ```
