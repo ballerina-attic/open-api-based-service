@@ -39,7 +39,7 @@ contains all the required details about the pet store RESTful API. Additionally,
 {
   "swagger": "2.0",
   "info": {
-    "description": "This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
+    "description": "This is a sample Petstore server.",
     "version": "1.0.0",
     "title": "Ballerina Petstore",
     "termsOfService": "http://ballerina.io/terms/",
@@ -508,7 +508,7 @@ ballerina run pet_store.balx
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 
-You can use the Ballerina executable archive (.balx) archive that we created above and create a docker image using either of the following commands. 
+You can use the Ballerina executable archive (.balx) archive that we created above and create a docker image the following command. 
 ```
 ballerina docker pet_store.balx  
 ```
