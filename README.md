@@ -508,7 +508,7 @@ ballerina run pet_store.balx
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 
-You can use the Ballerina executable archive (.balx) archive that we created above and create a docker image the following command. 
+You can use the Ballerina executable (.balx) archive that we created above and create a docker image by using the following command. 
 ```
 ballerina docker pet_store.balx  
 ```
