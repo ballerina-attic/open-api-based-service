@@ -56,7 +56,7 @@ service<http> BallerinaPetstore {
             _ = conn.respond(resp);
             return;
         }
-        // Update the pet details into the map
+        // Update the pet details in the map
         petData[petId] = petUpdateData;
         // Send back the status message back to the client
         string payload = "Pet details updated successfully : id = " + petId;
