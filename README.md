@@ -26,7 +26,7 @@ Optional Requirements
 
 #### Understand the Swagger / OpenAPI specification
 The scenario that we use throughout this guide will base on a [OpenAPI / Swagger specification of a pet store web service](https://github.com/rosensilva/open-api-based-service/blob/master/petstore.json). The OpenAPI / Swagger specification
-contains all the required details about the pet store RESTful API. Additionally, You can use the Swagger View in Ballerina Composer to create and edit OpenAPI / Swagger files. 
+contains all the required details about the pet store RESTful API. Additionally, You can use the Swagger view in Ballerina Composer to create and edit OpenAPI / Swagger files. 
 
 ##### Basic structure of petstore Swagger/OpenAPI specification
 ```json
@@ -34,7 +34,7 @@ contains all the required details about the pet store RESTful API. Additionally,
   "swagger": "2.0",
   "info": {
     "title": "Ballerina Petstore",
-    "description": "This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
+    "description": "This is a sample Petstore server.",
     "version": "1.0.0"
   },
   "host": "localhost:9090",
