@@ -1,4 +1,4 @@
-package guide.pet_store;
+package guide.petstore;
 
 import ballerina.net.http;
 import ballerina.test;
