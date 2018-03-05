@@ -79,7 +79,7 @@ $ ballerina swagger skeleton petstore.json -d guide/petstore/ballerinaPetstore.b
 
 The `-p` flag indicates the package name and `-d` flag indicates the file destination for the web service. These parameters are optional and can be used to have a customized package name and file location for the project.
 
-#### Project structure 
+#### Generated project structure 
 After running the above command, the pet store web service will be auto-generated. You should see a package structure similar to the following,
 
 ```
@@ -92,7 +92,7 @@ After running the above command, the pet store web service will be auto-generate
 ```
 The `guide.petstore` is the package for the pet store web service. You will have the skeleton of the service implementation. 
 
-##### The generated `ballerina_petstore.bal` file
+##### Generated `ballerina_petstore.bal` file
   
 ```ballerina
 package guide.petstore;
