@@ -5,7 +5,7 @@ detailing all of its resources and operations in a human and machine-readable fo
 The Swagger to Ballerina Code Generator can take existing Swagger definition files and generate Ballerina services from them.
 
 ## <a name="what-you-build"></a>  What you'll build
-You'll build an RESTful web service using an OpenAPI / Swagger specification. We will use an OpenAPI / Swagger specification of a pet store RESTful service throughout this guide. The pet store service have RESTful POST,PUT,GET and DELETE methods to handle pet data.
+You'll build an RESTful web service using an OpenAPI / Swagger specification. This guide will walk you through building a pet store server from an OpenAPI / Swagger definition. The pet store service will have RESTful POST,PUT,GET and DELETE methods to handle pet data.
 
 &nbsp; 
 ![alt text](https://github.com/rosensilva/open-api-based-service/blob/master/images/swagger_diagram.png)
@@ -25,8 +25,8 @@ Optional Requirements
 ### Before you begin
 
 #### Understand the Swagger / OpenAPI specification
-The scenario that we use throughout this guide will base on a [swagger specification of a pet store web service](https://github.com/rosensilva/open-api-based-service/blob/master/petstore.json). The OpenAPI specification
-contains all the required details about the pet store RESTful API. Additionally, You can use the swagger view in Ballerina composer to create and edit swagger files. 
+The scenario that we use throughout this guide will base on a [OpenAPI / Swagger specification of a pet store web service](https://github.com/rosensilva/open-api-based-service/blob/master/petstore.json). The OpenAPI / Swagger specification
+contains all the required details about the pet store RESTful API. Additionally, You can use the Swagger View in Ballerina Composer to create and edit OpenAPI / Swagger files. 
 
 ##### Basic structure of petstore Swagger/OpenAPI specification
 ```json
@@ -60,7 +60,7 @@ contains all the required details about the pet store RESTful API. Additionally,
   }
 }
 ```
-NOTE :  The above OpenAPI definition is only the basic structure. You can find the complete swagger definition in `open-api-based-service/petstore.json` file.
+NOTE :  The above OpenAPI / Swagger definition is only the basic structure. You can find the complete OpenAPI / Swagger definition in `open-api-based-service/petstore.json` file.
 
 ### Genarate the web service from the Swagger / OpenAPI definition
 
@@ -69,11 +69,11 @@ Ballerina language is capable of understanding the Swagger / OpenAPI specificati
 ballerina swagger skeleton <swaggerFile> [-d <output directory name>] [-p <package name>] 
 ```
 
-For our pet store service you need to run the following command from the sample root directory(location where you have the petstore.json file) to generate the Ballerina service from the swagger definition
+For our pet store service you need to run the following command from the sample root directory(location where you have the petstore.json file) to generate the Ballerina service from the OpenAPI / Swagger definition
 
 ```bash 
 
-$ ballerina swagger skeleton petstore.json -d guide/pet_store/ballerinaPetstore.bal -p guide.petstore
+$ ballerina swagger skeleton petstore.json -d guide/petstore/ballerinaPetstore.bal -p guide.petstore
 
 ```
 
@@ -84,7 +84,7 @@ After running the above command, the pet store web service will be auto-generate
 
 ```
 ├── guide
-│   └── pet_store
+│   └── petstore
 │       ├── ballerina_petstore.bal
 │       └── ballerina_petstore_test.bal
 └── petstore.json
@@ -258,19 +258,19 @@ You can run the RESTful service that you developed above, in your local environm
 1. As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
 
 ```
-$ ballerina build guide/pet_store/
+$ ballerina build guide/petstore/
 
 ```
 
-2. Once the employeeService.balx is created, you can run that with the following command. 
+2. Once the petstore.balx is created, you can run that with the following command. 
 
 ```
-$ ballerina run pet_store.balx  
+$ ballerina run petstore.balx  
 ```
 
 3. The successful execution of the service should show us the following output. 
 ```
-ballerina: deploying service(s) in 'pet_store.balx'
+ballerina: deploying service(s) in 'petstore.balx'
 ballerina: started HTTP/WS server connector 0.0.0.0:9090
 
 ```
@@ -321,7 +321,7 @@ In ballerina, the unit test cases should be in the same package and the naming c
 This guide contains unit test cases in the respective folders. The test cases are written to test the pet store web service.
 To run the unit tests, go to the sample root directory and run the following command
 ```bash
-$ ballerina test guide/pet_store/
+$ ballerina test guide/petstore/
 ```
 
 ## <a name="deploying-the-scenario"></a> Deployment
@@ -332,7 +332,7 @@ Once you are done with the development, you can deploy the service using any of 
 You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
 
 ```
-ballerina run pet_store.balx 
+ballerina run petstore.balx 
 ```
 
 
