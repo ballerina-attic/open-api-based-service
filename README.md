@@ -66,183 +66,377 @@ NOTE :  The above OpenAPI / Swagger definition is only the basic structure. You 
 
 Ballerina language is capable of understanding the Swagger / OpenAPI specifications. You can easily generate the web service just by typing the following command structure in the terminal.
 ```
-ballerina swagger skeleton <swaggerFile> [-d <output directory name>] [-p <package name>] 
+ballerina swagger skeleton <swaggerFile> [-o <output directory name>] [-p <package name>] 
 ```
 
-For our pet store service you need to run the following command from the sample root directory(location where you have the petstore.json file) to generate the Ballerina service from the OpenAPI / Swagger definition
+For our pet store service you need to run the following command from the `/src` in sample root directory(location where you have the petstore.json file) to generate the Ballerina service from the OpenAPI / Swagger definition
 
 ```bash 
 
-$ ballerina swagger skeleton petstore.json -d guide/petstore/ballerinaPetstore.bal -p guide.petstore
+$ ballerina swagger skeleton petstore.json -o petstore -p petstore
 
 ```
 
-The `-p` flag indicates the package name and `-d` flag indicates the file destination for the web service. These parameters are optional and can be used to have a customized package name and file location for the project.
+The `-p` flag indicates the package name and `-o` flag indicates the file destination for the web service. These parameters are optional and can be used to have a customized package name and file location for the project.
 
 #### Generated project structure 
 After running the above command, the pet store web service will be auto-generated. You should see a package structure similar to the following,
 
 ```
-├── guide
-│   └── petstore
-│       ├── ballerina_petstore.bal
-│       └── ballerina_petstore_test.bal
-└── petstore.json
-
+└── src
+    ├── petstore
+    │   ├── BallerinaPetstore.bal
+    │   ├── models.bal
+    │   └── tests
+    │       └── ballerina_petstore_test.bal
+    └── petstore.json
 ```
-The `guide.petstore` is the package for the pet store web service. You will have the skeleton of the service implementation. 
+The `petstore` is the package for the pet store web service. You will have the skeleton of the service implementation. 
 
-##### Generated `ballerina_petstore.bal` file
+##### Generated `BallerinaPetstore.bal` file
   
 ```ballerina
-package guide.petstore;
 
-import ballerina.net.http;
+import ballerina/net.http;
+import ballerina/net.http.swagger;
 
-
-@http:configuration {
+endpoint http:ServiceEndpoint ep0 {
     host: "localhost",
-    port: 9090,
+    port: 9090
+};
+
+@swagger:ServiceInfo { 
+    title: "Ballerina Petstore",
+    description: "This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
+    serviceVersion: "1.0.0",
+    termsOfService: "http://ballerina.io/terms/",
+    contact: {name: "", email: "samples@ballerina.io", url: ""},
+    license: {name: "Apache 2.0", url: "http://www.apache.org/licenses/LICENSE-2.0.html"},
+    tags: [
+        {name: "pet", description: "Everything about your Pets", externalDocs: { description: "Find out more", url: "http://ballerina.io" } }
+    ],
+    externalDocs: { description: "Find out more about Ballerina", url: "http://ballerina.io" },
+    security: [
+    ]
+}
+@http:ServiceConfig {
     basePath: "/v1"
 }
-service<http> BallerinaPetstore {
+service<http:Service> BallerinaPetstore bind ep0 {
 
-    @http:resourceConfig {
+    @swagger:ResourceInfo {
+        tags: ["pet"],
+        summary: "Add a new pet to the store",
+        description: "",
+        externalDocs: {  },
+        parameters: [
+        ]
+    }
+    @http:ResourceConfig {
         methods:["POST"],
         path:"/pet"
     }
-    resource addPet (http:Connection conn, http:InRequest inReq) {
+    addPet (endpoint outboundEp, http:Request req) {
         //stub code - fill as necessary
-        http:OutResponse resp = {};
+        http:Response resp = {};
         string payload = "Sample addPet Response";
         resp.setStringPayload(payload);
-        _ = conn.respond(resp);
+        _ = outboundEp -> respond(resp);
     }
 
-    @http:resourceConfig {
+    @swagger:ResourceInfo {
+        tags: ["pet"],
+        summary: "Update an existing pet",
+        description: "",
+        externalDocs: {  },
+        parameters: [
+        ]
+    }
+    @http:ResourceConfig {
         methods:["PUT"],
         path:"/pet"
     }
-    resource updatePet (http:Connection conn, http:InRequest inReq) {
+    updatePet (endpoint outboundEp, http:Request req) {
         //stub code - fill as necessary
-        http:OutResponse resp = {};
+        http:Response resp = {};
         string payload = "Sample updatePet Response";
         resp.setStringPayload(payload);
-        _ = conn.respond(resp);
+        _ = outboundEp -> respond(resp);
     }
 
-    @http:resourceConfig {
+    @swagger:ResourceInfo {
+        tags: ["pet"],
+        summary: "Find pet by ID",
+        description: "Returns a single pet",
+        externalDocs: {  },
+        parameters: [
+            {
+                name: "petId",
+                inInfo: "path",
+                description: "ID of pet to return", 
+                required: true, 
+                allowEmptyValue: ""
+            }
+        ]
+    }
+    @http:ResourceConfig {
         methods:["GET"],
         path:"/pet/{petId}"
     }
-    resource getPetById (http:Connection conn, http:InRequest inReq, string petId) {
-        //stub de - fill as necessary
-        http:OutResponse resp = {};
+    getPetById (endpoint outboundEp, http:Request req, string petId) {
+        //stub code - fill as necessary
+        http:Response resp = {};
         string payload = "Sample getPetById Response";
         resp.setStringPayload(payload);
-        _ = conn.respond(resp);
+        _ = outboundEp -> respond(resp);
     }
 
-    @http:resourceConfig {
+    @swagger:ResourceInfo {
+        tags: ["pet"],
+        summary: "Deletes a pet",
+        description: "",
+        externalDocs: {  },
+        parameters: [
+            {
+                name: "petId",
+                inInfo: "path",
+                description: "Pet id to delete", 
+                required: true, 
+                allowEmptyValue: ""
+            }
+        ]
+    }
+    @http:ResourceConfig {
         methods:["DELETE"],
         path:"/pet/{petId}"
     }
-    resource deletePet (http:Connection conn, http:InRequest inReq, string petId) {
+    deletePet (endpoint outboundEp, http:Request req, string petId) {
         //stub code - fill as necessary
-        http:OutResponse resp = {};
+        http:Response resp = {};
         string payload = "Sample deletePet Response";
         resp.setStringPayload(payload);
-        _ = conn.respond(resp);
+        _ = outboundEp -> respond(resp);
     }
-}
 
+}
 ```
 
-  Next we need to implement the business logic inside each RESTful resource and build the pet store web service.
-  
+ Next we need to implement the business logic inside each RESTful resource and build the pet store web service.
 
 ### Implementation of the Ballerina web service
 
 Now we have the Ballerina web service skeleton file. We only need to add the business logic inside each resource. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
 
 ```ballerina
-package guide.petstore;
+package petstore;
 
-import ballerina.net.http;
+import ballerina/mime;
+import ballerina/net.http.swagger;
+import ballerina/net.http;
 
+map petData = {};
 
-@http:configuration {
+// Service endpoint for the pet store
+endpoint http:ServiceEndpoint ep0 {
     host:"localhost",
-    port:9090,
+    port:9090
+};
+
+@swagger:ServiceInfo {
+    title:"Ballerina Petstore",
+    description:"This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
+    serviceVersion:"1.0.0",
+    termsOfService:"http://ballerina.io/terms/",
+    contact:{name:"", email:"samples@ballerina.io", url:""},
+    license:{name:"Apache 2.0", url:"http://www.apache.org/licenses/LICENSE-2.0.html"},
+    tags:[
+         {name:"pet", description:"Everything about your Pets", externalDocs:{description:"Find out more", url:"http://ballerina.io"}}
+         ],
+    externalDocs:{description:"Find out more about Ballerina", url:"http://ballerina.io"},
+    security:[
+             ]
+}
+@http:ServiceConfig {
     basePath:"/v1"
 }
-service<http> BallerinaPetstore {
-    // Use in memory data map to store pet data
-    map petData = {};
+service<http:Service> BallerinaPetstore bind ep0 {
 
-    @http:resourceConfig {
+    @swagger:ResourceInfo {
+        tags:["pet"],
+        summary:"Add a new pet to the store",
+        description:"",
+        externalDocs:{},
+        parameters:[
+                   ]
+    }
+    @http:ResourceConfig {
         methods:["POST"],
         path:"/pet"
     }
-    resource addPet (http:Connection conn, http:InRequest inReq) {
-        http:OutResponse resp = {};
-        // Retrieve the json payload data of pets
-        json petDataJson = inReq.getJsonPayload();
-        var petId, payloadDataError = (string)petDataJson.id;
-
-        // Add the pet details into the map
-        petData[petId] = petDataJson;
-        // Send back the status message back to the client
-        string payload = "Pet added successfully : Pet ID = " + petId;
-        resp.setStringPayload(payload);
-        _ = conn.respond(resp);
+    addPet (endpoint outboundEp, http:Request req) {
+        // Initialize the http response message
+        http:Response resp = {};
+        // Retrieve the data about pets from the json payload of the request
+        var reqesetPayloadData = req.getJsonPayload();
+        // Match the json payload with json and errors
+        match reqesetPayloadData {
+        // If the req.getJsonPayload() returns JSON
+            json petDataJson => {
+            // Transform into Pet data structure
+                Pet petDetails =? <Pet>petDataJson;
+                if (petDetails.id == "") {
+                    // Send bad request message to the client if request doesn't contain valid pet id
+                    resp.setStringPayload("Error : Please provide the json payload with `id`,`catogery` and `name`");
+                    // set the response code as 400 to indicate a bad request
+                    resp.statusCode = 400;
+                    // Send the error message with the response
+                    _ = outboundEp -> respond(resp);
+                }
+                else {
+                    // Add the pet details into the in memory map
+                    petData[petDetails.id] = petDetails;
+                    // Send back the status message back to the client
+                    string payload = "Pet added successfully : Pet ID = " + petDetails.id;
+                    resp.setStringPayload(payload);
+                    _ = outboundEp -> respond(resp);
+                }
+            }
+            mime:EntityError => {
+            // Send bad request message to the client if request doesn't contain valid pet data
+                resp.setStringPayload("Error : Please provide the json payload with `id`,`catogery` and `name`");
+                // set the response code as 400 to indicate a bad request
+                resp.statusCode = 400;
+                _ = outboundEp -> respond(resp);
+            }
+        }
     }
 
-    @http:resourceConfig {
+    @swagger:ResourceInfo {
+        tags:["pet"],
+        summary:"Update an existing pet",
+        description:"",
+        externalDocs:{},
+        parameters:[
+                   ]
+    }
+    @http:ResourceConfig {
         methods:["PUT"],
         path:"/pet"
     }
-    resource updatePet (http:Connection conn, http:InRequest inReq) {
-        http:OutResponse resp = {};
-        // Retrieve the payload data of pets
-        json petUpdateData = inReq.getJsonPayload();
-        var petId, payloadDataError = (string)petUpdateData.id;
+    updatePet (endpoint outboundEp, http:Request req) {
+        // Initialize the http response message
+        http:Response resp = {};
+        // Retrieve the data about pets from the json payload of the request
+        var reqesetPayloadData = req.getJsonPayload();
+        // Match the json payload with json and errors
+        match reqesetPayloadData {
+        // If the req.getJsonPayload() returns JSON
+            json petDataJson => {
+            // Transform into Pet data structure
+                Pet petDetails =? <Pet>petDataJson;
+                if (petDetails.id == "" || !petData.hasKey(petDetails.id)) {
+                    // Send bad request message to the client if request doesn't contain valid pet id
+                    resp.setStringPayload("Error : Please provide the json payload with valid `id``");
+                    // set the response code as 400 to indicate a bad request
+                    resp.statusCode = 400;
+                    _ = outboundEp -> respond(resp);
+                }
+                else {
+                    // Update the pet details in the map
+                    petData[petDetails.id] = petDetails;
+                    // Send back the status message back to the client
+                    string payload = "Pet updated successfully : Pet ID = " + petDetails.id;
+                    resp.setStringPayload(payload);
+                    _ = outboundEp -> respond(resp);
+                }
+            }
 
-        // Update the pet details into the map
-        petData[petId] = petUpdateData;
-        // Send back the status message back to the client
-        string payload = "Pet details updated successfully : id = " + petId;
-        resp.setStringPayload(payload);
-        _ = conn.respond(resp);
+            mime:EntityError => {
+            // Send bad request message to the client if request doesn't contain valid pet data
+                resp.setStringPayload("Error : Please provide the json payload with `id`,`catogery` and `name`");
+                // set the response code as 400 to indicate a bad request
+                resp.statusCode = 400;
+                _ = outboundEp -> respond(resp);
+            }
+        }
     }
 
-    @http:resourceConfig {
+    @swagger:ResourceInfo {
+        tags:["pet"],
+        summary:"Find pet by ID",
+        description:"Returns a single pet",
+        externalDocs:{},
+        parameters:[
+                   {
+                       name:"petId",
+                       inInfo:"path",
+                       description:"ID of pet to return",
+                       required:true,
+                       allowEmptyValue:""
+                   }
+                   ]
+    }
+    @http:ResourceConfig {
         methods:["GET"],
         path:"/pet/{petId}"
     }
-    resource getPetById (http:Connection conn, http:InRequest inReq, string petId) {
-        http:OutResponse resp = {};
-
-        // Set the pet data as the payload and send back the response
-        var payload, _ = (json)petData[petId];
-        resp.setJsonPayload(payload);
-        _ = conn.respond(resp);
+    getPetById (endpoint outboundEp, http:Request req, string petId) {
+        // Initialize http response message to send back to the client
+        http:Response resp = {};
+        // Send bad request message to client if pet ID cannot found in petData map
+        if (!petData.hasKey(petId)) {
+            resp.setStringPayload("Error : Invalid Pet ID");
+            // set the response code as 400 to indicate a bad request
+            resp.statusCode = 400;
+            _ = outboundEp -> respond(resp);
+        }
+        else {
+            // Set the pet data as the payload and send back the response
+            var payload = <string>petData[petId];
+            resp.setStringPayload(payload);
+            _ = outboundEp -> respond(resp);
+        }
     }
 
-    @http:resourceConfig {
+    @swagger:ResourceInfo {
+        tags:["pet"],
+        summary:"Deletes a pet",
+        description:"",
+        externalDocs:{},
+        parameters:[
+                   {
+                       name:"petId",
+                       inInfo:"path",
+                       description:"Pet id to delete",
+                       required:true,
+                       allowEmptyValue:""
+                   }
+                   ]
+    }
+    @http:ResourceConfig {
         methods:["DELETE"],
         path:"/pet/{petId}"
     }
-    resource deletePet (http:Connection conn, http:InRequest inReq, string petId) {
-        http:OutResponse resp = {};
-
-        // Remove the pet data from the petData map
-        petData.remove(petId);
-        // Send the status back to the client
-        string payload = "Deleted pet data successfully : Pet ID = " + petId;
-        resp.setStringPayload(payload);
-        _ = conn.respond(resp);
+    deletePet (endpoint outboundEp, http:Request req, string petId) {
+        // Initialize http response message
+        http:Response resp = {};
+        // Send bad request message to client if pet ID cannot found in petData map
+        if (!petData.hasKey(petId)) {
+            resp.setStringPayload("Error : Invalid Pet ID");
+            // set the response code as 400 to indicate a bad request
+            resp.statusCode = 400;
+            _ = outboundEp -> respond(resp);
+        }
+        else {
+            // Remove the pet data from the petData map
+            _ = petData.remove(petId);
+            // Send the status back to the client
+            string payload = "Deleted pet data successfully : Pet ID = " + petId;
+            resp.setStringPayload(payload);
+            _ = outboundEp -> respond(resp);
+        }
     }
+
 }
 
 ```
@@ -258,7 +452,7 @@ You can run the RESTful service that you developed above, in your local environm
 1. As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
 
 ```
-$ ballerina build guide/petstore/
+$ ballerina build petstore/
 
 ```
 
@@ -313,7 +507,7 @@ Deleted pet data successfully: Pet ID = 1
 
 ### <a name="unit-testing"></a> Writing Unit Tests 
 
-In ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
+In ballerina, the unit test cases should be in the same package inside a `tests` directory. The naming convention should be as follows,
 * Test files should contain _test.bal suffix.
 * Test functions should contain test prefix.
   * e.g.: testPetStore()
@@ -321,7 +515,7 @@ In ballerina, the unit test cases should be in the same package and the naming c
 This guide contains unit test cases in the respective folders. The test cases are written to test the pet store web service.
 To run the unit tests, go to the sample root directory and run the following command
 ```bash
-$ ballerina test guide/petstore/
+$ ballerina test petstore/
 ```
 
 ## <a name="deploying-the-scenario"></a> Deployment
