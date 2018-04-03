@@ -70,14 +70,13 @@ function testPetStore () {
         }
     }
 
-
     // Test the updatePet resource
     req = {};
     req.setJsonPayload(updatedPet);
     // Send a request to the pet store service
     resp =? httpEndpoint -> put("/pet", req);
     test:assertEquals(resp.statusCode, 200, msg = "pet store service didnot respond with 200 OK signal");
-    expectedOutputString = "Pet details updated successfully : id = 1";
+    expectedOutputString = "Pet updated successfully : Pet ID = 1";
     // Assert the response message payload string
     var receivedPayload2 = resp.getStringPayload();
     match receivedPayload2 {
