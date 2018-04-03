@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/rosensilva/open-api-based-service.svg?branch=master)](https://travis-ci.org/rosensilva/open-api-based-service)
+
 # Building RESTful Service with Swagger / OpenAPI Specifications
 This guide walks you through building a RESTful Ballerina web service using [Swagger / OpenAPI Specification](https://swagger.io/specification/).
 OpenAPI Specification (formerly called the Swagger Specification) is a specification that creates RESTful contract for APIs,
