@@ -1,10 +1,11 @@
 before_install:
-- sudo chmod +x install-dependencies.sh 
+- sudo chmod +x install-dependencies.sh
+
 install: ./install-dependencies.sh
 
 script:
 - export PATH=$PATH:$(pwd)/ballerina-tools-0.964.0/bin
-- cd src/
+- ls
 - ballerina test
 
 jdk:
