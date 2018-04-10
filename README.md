@@ -10,7 +10,7 @@ The Swagger to Ballerina Code Generator can take existing Swagger definition fil
 You'll build an RESTful web service using an OpenAPI / Swagger specification. This guide will walk you through building a pet store server from an OpenAPI / Swagger definition. The pet store service will have RESTful POST,PUT,GET and DELETE methods to handle pet data.
 
 &nbsp; 
-![alt text](https://github.com/rosensilva/open-api-based-service/blob/master/images/swagger_diagram.png)
+![alt text](/images/open-api-based-service.png)
 &nbsp; 
 
 ## <a name="pre-req"></a> Prerequisites
