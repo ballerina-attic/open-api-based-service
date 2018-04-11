@@ -25,7 +25,7 @@ import ballerina/net.http;
 //
 //@kubernetes:Deployment {
 //  image:"ballerina.guides.io/petstore:v1.0",
-//  name:"ballerina-guides-petstore",
+//  name:"ballerina-guides-petstore"
 //}
 
 // Service endpoint for the pet store
