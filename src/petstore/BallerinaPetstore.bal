@@ -3,14 +3,38 @@ package petstore;
 import ballerina/mime;
 import ballerina/net.http.swagger;
 import ballerina/net.http;
+//import ballerinax/docker;
+//import ballerinax/kubernetes;
 
-map petData = {};
+//@docker:Config {
+//    registry:"ballerina.guides.io",
+//    name:"petstore",
+//    tag:"v1.0"
+//}
+
+//@kubernetes:Ingress {
+//  hostname:"ballerina.guides.io",
+//  name:"ballerina-guides-petstore",
+//  path:"/"
+//}
+//
+//@kubernetes:Service {
+//  serviceType:"NodePort",
+//  name:"ballerina-guides-petstore"
+//}
+//
+//@kubernetes:Deployment {
+//  image:"ballerina.guides.io/petstore:v1.0",
+//  name:"ballerina-guides-petstore",
+//}
 
 // Service endpoint for the pet store
 endpoint http:ServiceEndpoint ep0 {
     host:"localhost",
     port:9090
 };
+
+map petData = {};
 
 @swagger:ServiceInfo {
     title:"Ballerina Petstore",
