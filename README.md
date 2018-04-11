@@ -474,30 +474,179 @@ ballerina run petstore.balx
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 
-You can use the Ballerina executable (.balx) archive that we created above and create a docker image by using the following command. 
-```
-ballerina docker pet_store.balx  
-```
+You can run the service that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on 
+containers, you just need to put the corresponding docker annotations on your service code. 
 
-Once you have created the docker image, you can run it using docker run. 
+- In our ballerina_petstore, we need to import  `` import ballerinax/docker; `` and use the annotation `` @docker:Config `` as shown below to enable docker image generation during the build time. 
 
-```
-docker run -p <host_port>:9090 --name ballerina_pet_store -d pet_store:latest
-```
+##### BallerinaPetstore.bal
+```ballerina
+package petstore;
+
+// Other imports
+import ballerinax/docker;
+
+@docker:Config {
+    registry:"ballerina.guides.io",
+    name:"petstore",
+    tag:"v1.0"
+}
+
+endpoint http:ServiceEndpoint ep0 {
+    host:"localhost",
+    port:9090
+};
+
+// 'petData' Map definition
+
+// '@swagger:ServiceInfo' annotation
+
+@http:ServiceConfig {
+    basePath:"/v1"
+}
+service<http:Service> BallerinaPetstore bind ep0 {
+   
+``` 
+
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
+  
+  ```
+  $ballerina build petstore
+  
+  Run following command to start docker container: 
+  docker run -d -p 9090:9090 ballerina.guides.io/petstore:v1.0
+  ```
+- Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
+
+    ```   
+    docker run -d -p 9090:9090 ballerina.guides.io/petstore:v1.0
+    ```
+    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+
+- Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
+- You can access the service using the same curl commands that we've used above. 
+ 
+    ```
+    curl -X POST -d '{"id":"1", "catogery":"dog", "name":"doggie"}' \
+    "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"  
+    ```
+
 
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
-(Work in progress) 
+
+- You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, 
+with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
+So you don't need to explicitly create docker images prior to deploying it on Kubernetes.   
+
+- We need to import `` import ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment for the service we developed above. 
+
+##### BallerinaPetstore.bal
+
+```ballerina
+package petstore;
+
+// Other imports
+import ballerinax/kubernetes;
+
+@kubernetes:Ingress {
+  hostname:"ballerina.guides.io",
+  name:"ballerina-guides-petstore",
+  path:"/"
+}
+
+@kubernetes:Service {
+  serviceType:"NodePort",
+  name:"ballerina-guides-petstore"
+}
+
+@kubernetes:Deployment {
+  image:"ballerina.guides.io/petstore:v1.0",
+  name:"ballerina-guides-petstore"
+}
+
+endpoint http:ServiceEndpoint ep0 {
+    host:"localhost",
+    port:9090
+};
+
+// 'petData' Map definition
+
+// '@swagger:ServiceInfo' annotation
+
+@http:ServiceConfig {
+    basePath:"/v1"
+}
+service<http:Service> BallerinaPetstore bind ep0 {
+        
+``` 
+- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
+- We have also specified `` @kubernetes:Service {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
+- In addition we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
+
+- Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
+This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+  
+  ```
+  $ballerina build petstore
+  
+  Run following command to deploy kubernetes artifacts:  
+  kubectl apply -f ./target/petstore/kubernetes
+ 
+  ```
+
+- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
+- Also the Kubernetes artifacts related our service, will be generated in `` ./target/restful_service/kubernetes``. 
+- Now you can create the Kubernetes deployment using:
+
+```
+ $ kubectl apply -f ./target/petstore/kubernetes 
+   deployment.extensions "ballerina-guides-petstore" created
+   ingress.extensions "ballerina-guides-petstore" created
+   service "ballerina-guides-petstore" created
+
+```
+- You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
+```
+$kubectl get service
+$kubectl get deploy
+$kubectl get pods
+$kubectl get ingress
+
+```
+
+- If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
+
+Node Port:
+ 
+```
+curl -X POST -d '{"id":"1", "catogery":"dog", "name":"doggie"}' \
+"http://<Minikube_host_IP>:<Node_Port>/v1/pet/" -H "Content-Type:application/json"  
+
+```
+Ingress:
+
+Add `/etc/hosts` entry to match hostname. 
+``` 
+127.0.0.1 ballerina.guides.io
+```
+
+Access the service 
+
+``` 
+curl -X POST -d '{"id":"1", "catogery":"dog", "name":"doggie"}' \
+"http://ballerina.guides.io/v1/pet/" -H "Content-Type:application/json" 
+    
+```
 
 
 ## <a name="observability"></a> Observability 
-
 
 ### <a name="logging"></a> Logging
 (Work in progress) 
 
 ### <a name="metrics"></a> Metrics
 (Work in progress) 
-
 
 ### <a name="tracing"></a> Tracing 
 (Work in progress) 
