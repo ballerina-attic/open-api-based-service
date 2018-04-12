@@ -74,9 +74,7 @@ ballerina swagger skeleton <swaggerFile> [-o <output directory name>] [-p <packa
 For our pet store service you need to run the following command from the `/src` in sample root directory(location where you have the petstore.json file) to generate the Ballerina service from the OpenAPI / Swagger definition
 
 ```bash 
-
 $ ballerina swagger skeleton petstore.json -o petstore -p petstore
-
 ```
 
 The `-p` flag indicates the package name and `-o` flag indicates the file destination for the web service. These parameters are optional and can be used to have a customized package name and file location for the project.
@@ -400,7 +398,6 @@ You can run the RESTful service that you developed above, in your local environm
 
 ```
 $ ballerina build petstore/
-
 ```
 
 2. Once the petstore.balx is created, you can run that with the following command. 
@@ -413,7 +410,6 @@ $ ballerina run petstore.balx
 ```
 ballerina: deploying service(s) in 'petstore.balx'
 ballerina: started HTTP/WS server connector 0.0.0.0:9090
-
 ```
 
 4. You can test the functionality of the pet store RESTFul service by sending HTTP request for each operation. For example, we have used the curl commands to test each operation of pet store as follows. 
@@ -510,7 +506,6 @@ endpoint http:ServiceEndpoint ep0 {
     basePath:"/v1"
 }
 service<http:Service> BallerinaPetstore bind ep0 {
-   
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
@@ -583,7 +578,6 @@ endpoint http:ServiceEndpoint ep0 {
     basePath:"/v1"
 }
 service<http:Service> BallerinaPetstore bind ep0 {
-        
 ``` 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
 - We have also specified `` @kubernetes:Service {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
