@@ -510,27 +510,26 @@ service<http:Service> BallerinaPetstore bind ep0 {
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
-  
-  ```
+```
   $ballerina build petstore
   
   Run following command to start docker container: 
   docker run -d -p 9090:9090 ballerina.guides.io/petstore:v1.0
-  ```
+```
 - Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
-    ```   
+```   
     docker run -d -p 9090:9090 ballerina.guides.io/petstore:v1.0
-    ```
+```
     Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
 - Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
  
-    ```
+```
     curl -X POST -d '{"id":"1", "catogery":"dog", "name":"doggie"}' \
     "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"  
-    ```
+```
 
 
 ### Deploying on Kubernetes
@@ -586,13 +585,13 @@ service<http:Service> BallerinaPetstore bind ep0 {
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
-  ```
+```
   $ballerina build petstore
   
   Run following command to deploy kubernetes artifacts:  
   kubectl apply -f ./target/petstore/kubernetes
  
-  ```
+```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
 - Also the Kubernetes artifacts related our service, will be generated in `` ./target/restful_service/kubernetes``. 
