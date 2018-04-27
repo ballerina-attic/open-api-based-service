@@ -77,10 +77,10 @@ NOTE :  The above OpenAPI / Swagger definition is only the basic structure. You 
 
 ### Create the project structure
 
-Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
+Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following project structure for this project to follow this guide.
 ```
 open-api-based-service
-  |── guide
+  └── guide
 	 └── petstore.json  
 ```
 
@@ -366,33 +366,18 @@ With that, we have completed the implementation of the pet store web service.
 
 ## Testing 
 
-### Invoking the RESTful service 
+### Invoking the petstore service 
 
-You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation on your local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
-
-1. As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
-
+You can run the RESTful service that you developed above, in your local environment. Open your terminal and navigate to `open-api-based-service/guide`, and execute the following command.
 ```
-$ ballerina build petstore/
+$ ballerina run petstore
 ```
 
-2. Once the petstore.balx is created, you can run that with the following command. 
-
-```
-$ ballerina run petstore.balx  
-```
-
-3. The successful execution of the service should show us the following output. 
-```
-ballerina: deploying service(s) in 'petstore.balx'
-ballerina: started HTTP/WS server connector 0.0.0.0:9090
-```
-
-4. You can test the functionality of the pet store RESTFul service by sending HTTP request for each operation. For example, we have used the curl commands to test each operation of pet store as follows. 
+- You can test the functionality of the pet store RESTFul service by sending HTTP request for each operation. For example, we have used the curl commands to test each operation of pet store as follows. 
 
 **Add a new pet** 
 ```
-curl -X POST -d '{"id":"1", "catogery":"dog", "name":"doggie"}' 
+curl -X POST -d '{"id":1, "catogery":"dog", "name":"doggie"}' 
 "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
 
 Output :  
@@ -409,7 +394,7 @@ Output:
 
 **Update pet data** 
 ```
-curl -X PUT -d '{"id":"1", "catogery":"dog-updated", "name":"Updated-doggie"}' 
+curl -X PUT -d '{"id":1, "catogery":"dog-updated", "name":"Updated-doggie"}' 
 "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
 
 Output: 
@@ -426,28 +411,43 @@ Deleted pet data successfully: Pet ID = 1
 
 ### Writing Unit Tests 
 
-In ballerina, the unit test cases should be in the same package inside a `tests` directory. The naming convention should be as follows,
-* Test files should contain _test.bal suffix.
-* Test functions should contain test prefix.
-  * e.g.: testPetStore()
-
-This guide contains unit test cases in the respective folders. The test cases are written to test the pet store web service.
-To run the unit tests, go to the sample root directory and run the following command
-```bash
-$ ballerina test petstore/
+In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
+- Test functions should be annotated with `@test:Config`. See the below example.
+```ballerina
+   @test:Config
+   function testPetStore() {
 ```
+  
+This guide contains unit test cases for each method available in the 'petstore service' implemented above. 
+
+To run the unit tests, open your terminal and navigate to `open-api-based-service/guide`, and run the following command.
+```bash
+$ ballerina test
+```
+
+To check the implementation of the test file, refer to the [ballerina_petstore_test.bal](guide/petstore/tests/ballerina_petstore_test.bal).
 
 ## Deployment
 
 Once you are done with the development, you can deploy the service using any of the methods that we listed below. 
 
 ### Deploying locally
-You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
 
+- As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory in which the service we developed above located and it will create an executable binary out of that. Navigate to `open-api-based-service/guide` and run the following command. 
 ```
-ballerina run petstore.balx 
+   $ ballerina build petstore
 ```
 
+- Once the restful_service.balx is created inside the target folder, you can run that with the following command. 
+```
+   $ ballerina run target/petstore.balx
+```
+
+- The successful execution of the service will show us the following output. 
+```
+   ballerina: initiating service(s) in 'target/petstore.balx'
+   ballerina: started HTTP/WS endpoint 0.0.0.0:9090
+```
 
 ### Deploying on Docker
 
@@ -458,8 +458,6 @@ containers, you just need to put the corresponding docker annotations on your se
 
 ##### BallerinaPetstore.bal
 ```ballerina
-package petstore;
-
 // Other imports
 import ballerinax/docker;
 
@@ -469,6 +467,7 @@ import ballerinax/docker;
     tag:"v1.0"
 }
 
+@docker:Expose{}
 endpoint http:ServiceEndpoint ep0 {
     host:"localhost",
     port:9090
@@ -485,7 +484,7 @@ service<http:Service> BallerinaPetstore bind ep0 {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/src/` folder and run the following command.  
+This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command.  
 ```
   $ballerina build petstore
   
@@ -503,7 +502,7 @@ This will also create the corresponding docker image using the docker annotation
 - You can access the service using the same curl commands that we've used above. 
  
 ```
-    curl -X POST -d '{"id":"1", "catogery":"dog", "name":"doggie"}' \
+    curl -X POST -d '{"id":1, "catogery":"dog", "name":"doggie"}' \
     "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"  
 ```
 
@@ -519,8 +518,6 @@ So you don't need to explicitly create docker images prior to deploying it on Ku
 ##### BallerinaPetstore.bal
 
 ```ballerina
-package petstore;
-
 // Other imports
 import ballerinax/kubernetes;
 
@@ -555,7 +552,7 @@ endpoint http:ServiceEndpoint ep0 {
 service<http:Service> BallerinaPetstore bind ep0 {
 ``` 
 - Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
-- We have also specified `` @kubernetes:Service {} `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
+- We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
@@ -570,7 +567,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
 ```
 
 - You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
-- Also the Kubernetes artifacts related our service, will be generated in `` ./target/restful_service/kubernetes``. 
+- Also the Kubernetes artifacts related our service, will be generated in `` ./target/petstore/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
 ```
@@ -594,7 +591,7 @@ $kubectl get ingress
 Node Port:
  
 ```
-curl -X POST -d '{"id":"1", "catogery":"dog", "name":"doggie"}' \
+curl -X POST -d '{"id":1, "catogery":"dog", "name":"doggie"}' \
 "http://<Minikube_host_IP>:<Node_Port>/v1/pet/" -H "Content-Type:application/json"  
 
 ```
@@ -608,7 +605,209 @@ Add `/etc/hosts` entry to match hostname.
 Access the service 
 
 ``` 
-curl -X POST -d '{"id":"1", "catogery":"dog", "name":"doggie"}' \
+curl -X POST -d '{"id":1, "catogery":"dog", "name":"doggie"}' \
 "http://ballerina.guides.io/v1/pet/" -H "Content-Type:application/json" 
     
 ```
+
+## Observability 
+Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `open-api-based-service/guide/`.
+
+```ballerina
+[b7a.observability]
+
+[b7a.observability.metrics]
+# Flag to enable Metrics
+enabled=true
+
+[b7a.observability.tracing]
+# Flag to enable Tracing
+enabled=true
+```
+
+NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
+
+### Tracing 
+
+You can monitor ballerina services using in built tracing capabilities of Ballerina. We'll use [Jaeger](https://github.com/jaegertracing/jaeger) as the distributed tracing system.
+Follow the following steps to use tracing with Ballerina.
+
+- You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
+```
+   [b7a.observability]
+
+   [b7a.observability.tracing]
+   enabled=true
+   name="jaeger"
+
+   [b7a.observability.tracing.jaeger]
+   reporter.hostname="localhost"
+   reporter.port=5775
+   sampler.param=1.0
+   sampler.type="const"
+   reporter.flush.interval.ms=2000
+   reporter.log.spans=true
+   reporter.max.buffer.spans=1000
+```
+
+- Run Jaeger docker image using the following command
+```bash
+   $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 \
+   -p14268:14268 jaegertracing/all-in-one:latest
+```
+
+- Navigate to `open-api-based-service/guide` and run the restful-service using following command 
+```
+   $ ballerina run petstore
+```
+
+- Observe the tracing using Jaeger UI using following URL
+```
+   http://localhost:16686
+```
+
+### Metrics
+Metrics and alarts are built-in with ballerina. We will use Prometheus as the monitoring tool.
+Follow the below steps to set up Prometheus and view metrics for Ballerina restful service.
+
+- You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
+
+```ballerina
+   [b7a.observability.metrics]
+   enabled=true
+   provider="micrometer"
+
+   [b7a.observability.metrics.micrometer]
+   registry.name="prometheus"
+
+   [b7a.observability.metrics.prometheus]
+   port=9700
+   hostname="0.0.0.0"
+   descriptions=false
+   step="PT1M"
+```
+
+- Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
+```
+   global:
+     scrape_interval:     15s
+     evaluation_interval: 15s
+
+   scrape_configs:
+     - job_name: prometheus
+       static_configs:
+         - targets: ['172.17.0.1:9797']
+```
+
+   NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
+   
+- Run the Prometheus docker image using the following command
+```
+   $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
+   prom/prometheus
+```
+   
+- You can access Prometheus at the following URL
+```
+   http://localhost:19090/
+```
+
+NOTE:  Ballerina will by default have following metrics for HTTP server connector. You can enter following expression in Prometheus UI
+-  http_requests_total
+-  http_response_time
+
+
+### Logging
+
+Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+
+- Start the Ballerina Service with the following command from `open-api-based-service/guide`
+```
+   $ nohup ballerina run petstore &>> ballerina.log&
+```
+   NOTE: This will write the console log to the `ballerina.log` file in the `open-api-based-service/guide` directory
+
+- Start Elasticsearch using the following command
+
+- Start Elasticsearch using the following command
+```
+   $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
+   elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
+```
+
+   NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
+   
+- Start Kibana plugin for data visualization with Elasticsearch
+```
+   $ docker run -p 5601:5601 -h kibana --name kibana --link \
+   elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
+```
+
+- Configure logstash to format the ballerina logs
+
+i) Create a file named `logstash.conf` with the following content
+```
+input {  
+ beats{ 
+     port => 5044 
+ }  
+}
+
+filter {  
+ grok{  
+     match => { 
+	 "message" => "%{TIMESTAMP_ISO8601:date}%{SPACE}%{WORD:logLevel}%{SPACE}
+	 \[%{GREEDYDATA:package}\]%{SPACE}\-%{SPACE}%{GREEDYDATA:logMessage}"
+     }  
+ }  
+}   
+
+output {  
+ elasticsearch{  
+     hosts => "elasticsearch:9200"  
+     index => "store"  
+     document_type => "store_logs"  
+ }  
+}  
+```
+
+ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pipeline`
+     
+iii) Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name
+     
+```
+$ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
+-it --rm -v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
+-p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
+```
+  
+ - Configure filebeat to ship the ballerina logs
+    
+i) Create a file named `filebeat.yml` with the following content
+```
+filebeat.prospectors:
+- type: log
+  paths:
+    - /usr/share/filebeat/ballerina.log
+output.logstash:
+  hosts: ["logstash:5044"]  
+```
+NOTE : Modify the ownership of filebeat.yml file using `$chmod go-w filebeat.yml` 
+
+ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\filebeat`   
+        
+iii) Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name
+     
+```
+$ docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
+-v {SAMPLE_ROOT}/guide.restful_service/restful_service/ballerina.log:/usr/share\
+/filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
+```
+ 
+ - Access Kibana to visualize the logs using following URL
+```
+   http://localhost:5601 
+```
+  
+ 
