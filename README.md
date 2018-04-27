@@ -138,15 +138,16 @@ endpoint http:Listener ep0 {
 
 @swagger:ServiceInfo { 
     title: "Ballerina Petstore",
-    description: "This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
+    description: "This is a sample Petstore server.",
     serviceVersion: "1.0.0",
     termsOfService: "http://ballerina.io/terms/",
     contact: {name: "", email: "samples@ballerina.io", url: ""},
     license: {name: "Apache 2.0", url: "http://www.apache.org/licenses/LICENSE-2.0.html"},
     tags: [
-        {name: "pet", description: "Everything about your Pets", externalDocs: { description: "Find out more", url: "http://ballerina.io" } }
+        {name: "pet", description: "Everything about your Pets", externalDocs:
+        { description: "Find out more", url: "http://ballerina.io" } }
     ],
-    externalDocs: { description: "Find out more about Ballerina", url: "http://ballerina.io" },
+    externalDocs: { description: "Find out about Ballerina", url: "http://ballerina.io" },
     security: [
     ]
 }
@@ -169,7 +170,8 @@ service BallerinaPetstore bind ep0 {
     }
     updatePet (endpoint outboundEp, http:Request req) {
         http:Response res = updatePet(req);
-        outboundEp->respond(res) but { error e => log:printError("Error while responding", err = e) };
+        outboundEp->respond(res) but { error e => log:printError("Error while responding",
+            err = e) };
     }
 
     @swagger:ResourceInfo {
@@ -186,7 +188,8 @@ service BallerinaPetstore bind ep0 {
     }
     addPet (endpoint outboundEp, http:Request req) {
         http:Response res = addPet(req);
-        outboundEp->respond(res) but { error e => log:printError("Error while responding", err = e) };
+        outboundEp->respond(res) but { error e => log:printError("Error while responding",
+            err = e) };
     }
 
     @swagger:ResourceInfo {
@@ -210,7 +213,8 @@ service BallerinaPetstore bind ep0 {
     }
     getPetById (endpoint outboundEp, http:Request req, int petId) {
         http:Response res = getPetById(req, petId);
-        outboundEp->respond(res) but { error e => log:printError("Error while responding", err = e) };
+        outboundEp->respond(res) but { error e => log:printError("Error while responding",
+            err = e) };
     }
 
     @swagger:ResourceInfo {
@@ -234,9 +238,12 @@ service BallerinaPetstore bind ep0 {
     }
     deletePet (endpoint outboundEp, http:Request req, int petId) {
         http:Response res = deletePet(req, petId);
-        outboundEp->respond(res) but { error e => log:printError("Error while responding", err = e) };
+        outboundEp->respond(res) but { error e => log:printError("Error while responding",
+            err = e) };
     }
+
 }
+
 ```
 
 Next we need to implement the business logic in the `ballerina_petstore_impl.bal` file.
@@ -264,8 +271,9 @@ public function addPet(http:Request req) returns http:Response {
             // Transform into Pet data structure
             Pet petDetails = check <Pet>petDataJson;
             if (petDetails.id == "") {
-                // Send bad request message to the client if request doesn't contain valid pet id
-                resp.setTextPayload("Error : Please provide the json payload with `id`,`catogery` and `name`");
+                // Send bad request message if request doesn't contain valid pet id
+                resp.setTextPayload("Error : Please provide the json payload with `id`,
+                `catogery` and `name`");
                 // set the response code as 400 to indicate a bad request
                 resp.statusCode = 400;
             }
@@ -278,8 +286,9 @@ public function addPet(http:Request req) returns http:Response {
             }
         }
         error => {
-            // Send bad request message to the client if request doesn't contain valid pet data
-            resp.setTextPayload("Error : Please provide the json payload with `id`,`catogery` and `name`");
+            // Send bad request message if request doesn't contain valid pet data
+            resp.setTextPayload("Error : Please provide the json payload with `id`,
+            `catogery` and `name`");
             // set the response code as 400 to indicate a bad request
             resp.statusCode = 400;
         }
@@ -300,8 +309,8 @@ public function updatePet(http:Request req) returns http:Response {
             // Transform into Pet data structure
             Pet petDetails = check <Pet>petDataJson;
             if (petDetails.id == "" || !petData.hasKey(petDetails.id)) {
-                // Send bad request message to the client if request doesn't contain valid pet id
-                resp.setTextPayload("Error : Please provide the json payload with valid `id``");
+                // Send bad request message if request doesn't contain valid pet id
+                resp.setTextPayload("Error : provide the json payload with valid `id``");
                 // set the response code as 400 to indicate a bad request
                 resp.statusCode = 400;
             }
@@ -315,8 +324,9 @@ public function updatePet(http:Request req) returns http:Response {
         }
 
         error => {
-            // Send bad request message to the client if request doesn't contain valid pet data
-            resp.setTextPayload("Error : Please provide the json payload with `id`,`catogery` and `name`");
+            // Send bad request message if request doesn't contain valid pet data
+            resp.setTextPayload("Error : Please provide the json payload with `id`,
+            `catogery` and `name`");
             // set the response code as 400 to indicate a bad request
             resp.statusCode = 400;
         }
