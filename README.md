@@ -1,10 +1,19 @@
-[![Build Status](https://travis-ci.org/rosensilva/open-api-based-service.svg?branch=master)](https://travis-ci.org/rosensilva/open-api-based-service)
+[![Build Status](https://travis-ci.org/ballerina-guides/open-api-based-service.svg?branch=master)](https://travis-ci.org/ballerina-guides/open-api-based-service)
 
 # Swagger / OpenAPI
-This guide walks you through building a RESTful Ballerina web service using [Swagger / OpenAPI Specification](https://swagger.io/specification/).
-OpenAPI Specification (formerly called the Swagger Specification) is a specification that creates RESTful contract for APIs,
-detailing all of its resources and operations in a human and machine-readable format for easy development, discovery, and integration.
+[OpenAPI Specification](https://swagger.io/specification/) (formerly called the Swagger Specification) is a specification that creates RESTful contract for APIs, detailing all of its resources and operations in a human and machine-readable format for easy development, discovery, and integration.
 The Swagger to Ballerina Code Generator can take existing Swagger definition files and generate Ballerina services from them.
+
+> This guide walks you through building a RESTful Ballerina web service using Swagger / OpenAPI Specification.
+
+The following are the sections available in this guide.
+
+- [What you'll build](#what-youll-build)
+- [Prerequisites](#prerequisites)
+- [Implementation](#implementation)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Observability](#observability)
 
 ## What you'll build
 You'll build an RESTful web service using an OpenAPI / Swagger specification. This guide will walk you through building a pet store server from an OpenAPI / Swagger definition. The pet store service will have RESTful POST,PUT,GET and DELETE methods to handle pet data.
@@ -15,15 +24,16 @@ You'll build an RESTful web service using an OpenAPI / Swagger specification. Th
 
 ## Prerequisites
  
-* JDK 1.8 or later
-* [Ballerina Distribution](https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
-* A Text Editor or an IDE
+- [Ballerina Distribution](https://ballerina.io/learn/getting-started/)
+- A Text Editor or an IDE 
 
-Optional Requirements
-- Ballerina IDE plugins. ( [IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
+### Optional requirements
+- Ballerina IDE plugins ([IntelliJ IDEA](https://plugins.jetbrains.com/plugin/9520-ballerina), [VSCode](https://marketplace.visualstudio.com/items?itemName=WSO2.Ballerina), [Atom](https://atom.io/packages/language-ballerina))
 - [Docker](https://docs.docker.com/engine/installation/)
+- [Kubernetes](https://kubernetes.io/docs/setup/)
 
-## Develop the application
+## Implementation
+
 ### Before you begin
 
 #### Understand the Swagger / OpenAPI specification
