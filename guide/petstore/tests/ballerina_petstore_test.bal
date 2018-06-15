@@ -39,8 +39,8 @@ function afterFunction() {
 }
 function testPetStore() {
     // Prepare sample pet data to test the petStore service
-    json samplePet = { "id": 1, "catogery": "dog", "name": "doggie" };
-    json updatedPet = { "id": 1, "catogery": "dog-updated", "name": "Updated-doggie" };
+    json samplePet = { "id": 1, "category": "dog", "name": "doggie" };
+    json updatedPet = { "id": 1, "category": "dog-updated", "name": "Updated-doggie" };
 
     // Initialize the empty http request and response
     http:Request req;

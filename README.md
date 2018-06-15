@@ -273,7 +273,7 @@ public function addPet(http:Request req) returns http:Response {
             if (petDetails.id == "") {
                 // Send bad request message if request doesn't contain valid pet id
                 resp.setTextPayload("Error : Please provide the json payload with `id`,
-                `catogery` and `name`");
+                `category` and `name`");
                 // set the response code as 400 to indicate a bad request
                 resp.statusCode = 400;
             }
@@ -288,7 +288,7 @@ public function addPet(http:Request req) returns http:Response {
         error => {
             // Send bad request message if request doesn't contain valid pet data
             resp.setTextPayload("Error : Please provide the json payload with `id`,
-            `catogery` and `name`");
+            `category` and `name`");
             // set the response code as 400 to indicate a bad request
             resp.statusCode = 400;
         }
@@ -326,7 +326,7 @@ public function updatePet(http:Request req) returns http:Response {
         error => {
             // Send bad request message if request doesn't contain valid pet data
             resp.setTextPayload("Error : Please provide the json payload with `id`,
-            `catogery` and `name`");
+            `category` and `name`");
             // set the response code as 400 to indicate a bad request
             resp.statusCode = 400;
         }
@@ -387,7 +387,7 @@ $ ballerina run petstore
 
 **Add a new pet** 
 ```
-curl -X POST -d '{"id":1, "catogery":"dog", "name":"doggie"}' 
+curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' 
 "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
 
 Output :  
@@ -399,12 +399,12 @@ Pet added successfully : Pet ID = 1
 curl "http://localhost:9090/v1/pet/1"
 
 Output:
-{"id":"1","catogery":"dog","name":"Updated"}
+{"id":"1","category":"dog","name":"Updated"}
 ```
 
 **Update pet data** 
 ```
-curl -X PUT -d '{"id":1, "catogery":"dog-updated", "name":"Updated-doggie"}' 
+curl -X PUT -d '{"id":1, "category":"dog-updated", "name":"Updated-doggie"}' 
 "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
 
 Output: 
@@ -512,7 +512,7 @@ This will also create the corresponding docker image using the docker annotation
 - You can access the service using the same curl commands that we've used above. 
  
 ```
-    curl -X POST -d '{"id":1, "catogery":"dog", "name":"doggie"}' \
+    curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
     "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"  
 ```
 
@@ -601,7 +601,7 @@ $kubectl get ingress
 Node Port:
  
 ```
-curl -X POST -d '{"id":1, "catogery":"dog", "name":"doggie"}' \
+curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
 "http://<Minikube_host_IP>:<Node_Port>/v1/pet/" -H "Content-Type:application/json"  
 
 ```
@@ -615,7 +615,7 @@ Add `/etc/hosts` entry to match hostname.
 Access the service 
 
 ``` 
-curl -X POST -d '{"id":1, "catogery":"dog", "name":"doggie"}' \
+curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
 "http://ballerina.guides.io/v1/pet/" -H "Content-Type:application/json" 
     
 ```
