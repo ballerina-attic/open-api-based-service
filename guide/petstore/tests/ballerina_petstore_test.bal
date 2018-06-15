@@ -49,7 +49,7 @@ function testPetStore() {
     // Test the addPet resource
     req.setJsonPayload(samplePet);
     // Send a request to the pet store service
-    resp = check httpEndpoint->post("/pet", request = req);
+    resp = check httpEndpoint->post("/pet", req);
     test:assertEquals(resp.statusCode, 200, msg =
         "pet store service didnot respond with 200 OK signal");
     string expectedOutputString = "Pet added successfully : Pet ID = 1";
@@ -69,7 +69,7 @@ function testPetStore() {
     req = new;
     req.setJsonPayload(updatedPet);
     // Send a request to the pet store service
-    resp = check httpEndpoint->put("/pet", request = req);
+    resp = check httpEndpoint->put("/pet", req);
     test:assertEquals(resp.statusCode, 200, msg =
         "pet store service didnot respond with 200 OK signal");
     expectedOutputString = "Pet updated successfully : Pet ID = 1";
@@ -87,7 +87,7 @@ function testPetStore() {
     // Test the getPetById resource
     req = new;
     // Send a request to the pet store service
-    resp = check httpEndpoint->get("/pet/1", request = req);
+    resp = check httpEndpoint->get("/pet/1");
     test:assertEquals(resp.statusCode, 200, msg =
         "pet store service didnot respond with 200 OK signal");
     // Assert the response message payload string
@@ -104,7 +104,7 @@ function testPetStore() {
     // Test the deletePet resource
     req = new;
     // Send a request to the pet store service
-    resp = check httpEndpoint->delete("/pet/1", request = req);
+    resp = check httpEndpoint->delete("/pet/1", req);
     test:assertEquals(resp.statusCode, 200, msg =
         "pet store service didnot respond with 200 OK signal");
     expectedOutputString = "Deleted pet data successfully : Pet ID = 1";
