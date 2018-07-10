@@ -77,7 +77,7 @@ NOTE :  The above OpenAPI / Swagger definition is only the basic structure. You 
 
 ### Create the project structure
 
-Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following project structure for this project to follow this guide.
+Ballerina is capable of maintaining custom project structures depending on the requirement. We use following project structure in this project to follow the guide.
 ```
 open-api-based-service
   └── guide
@@ -93,12 +93,12 @@ open-api-based-service
 
 ### Genarate the web service from the Swagger / OpenAPI definition
 
-Ballerina language is capable of understanding the Swagger / OpenAPI specifications. You can easily generate the web service just by typing the following command structure in the terminal.
+Ballerina language is capable of understanding the Swagger / OpenAPI specifications. We can easily generate the web service just by typing the following command structure in the terminal.
 ```
 ballerina swagger mock <swaggerFile> [-o <output directory name>] [-p <package name>] 
 ```
 
-For our pet store service you need to run the following command from the `/guide` in sample root directory(location where you have the petstore.json file) to generate the Ballerina service from the OpenAPI / Swagger definition
+For our pet store service we need to run the following command from the `/guide` in sample root directory(location where you have the petstore.json file) to generate the Ballerina service from the OpenAPI / Swagger definition
 
 ```bash 
 $ ballerina swagger mock petstore.json -p petstore
@@ -107,7 +107,7 @@ $ ballerina swagger mock petstore.json -p petstore
 The `-p` flag indicates the package name and `-o` flag indicates the file destination for the web service. These parameters are optional and can be used to have a customized package name and file location for the project.
 
 #### Generated ballerina packages 
-After running the above command, the pet store web service will be auto-generated. You should now see a package structure similar to the following,
+After running the above command, the pet store web service will be auto-generated. Now the package structure is similar to the following,
 
 ```
 └── open-api-based-service
@@ -237,7 +237,7 @@ service BallerinaPetstore bind ep0 {
         path:"/pet/{petId}"
     }
     deletePet (endpoint outboundEp, http:Request req, int petId) {
-        http:Response res = deletePet(req, petId);
+        http:Response res = deletePet(req, untaint petId);
         outboundEp->respond(res) but { error e => log:printError("Error while responding",
             err = e) };
     }
@@ -250,7 +250,7 @@ Next we need to implement the business logic in the `ballerina_petstore_impl.bal
 
 ### Implement the business logic for petstore 
 
-Now you have the Ballerina web service for the give `petstore.json` Swagger file. Then you need to implement the business logic for functionality of each resource. The Ballerina Swagger generator has generated `ballerina_petstore_impl.bal` file inside the `open-api-based-service/guide/petstore`. You need to fill the `ballerina_petstore_impl.bal` as per your requirement. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
+Now we have the Ballerina web service for the give `petstore.json` Swagger file. Next task is to implement the business logic for functionality of each resource. The Ballerina Swagger generator has generated `ballerina_petstore_impl.bal` file inside the `open-api-based-service/guide/petstore`. We need to fill the `ballerina_petstore_impl.bal` as per the requirement. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
 
 ```ballerina
 import ballerina/http;
@@ -282,7 +282,7 @@ public function addPet(http:Request req) returns http:Response {
                 petData[petDetails.id] = petDetails;
                 // Send back the status message back to the client
                 string payload = "Pet added successfully : Pet ID = " + petDetails.id;
-                resp.setTextPayload(payload);
+                resp.setTextPayload(untaint payload);
             }
         }
         error => {
@@ -319,7 +319,7 @@ public function updatePet(http:Request req) returns http:Response {
                 petData[petDetails.id] = petDetails;
                 // Send back the status message back to the client
                 string payload = "Pet updated successfully : Pet ID = " + petDetails.id;
-                resp.setTextPayload(payload);
+                resp.setTextPayload(untaint payload);
             }
         }
 
@@ -347,7 +347,7 @@ public function getPetById(http:Request req, int petId) returns http:Response {
     else {
         // Set the pet data as the payload and send back the response
         var payload = <string>petData[<string>petId];
-        resp.setTextPayload(payload);
+        resp.setTextPayload(untaint payload);
     }
     return resp;
 }
@@ -399,7 +399,7 @@ Pet added successfully : Pet ID = 1
 curl "http://localhost:9090/v1/pet/1"
 
 Output:
-{"id":"1","category":"dog","name":"Updated"}
+{"id":"1","category":"dog","name":"doggie"}
 ```
 
 **Update pet data** 
@@ -461,10 +461,10 @@ Once you are done with the development, you can deploy the service using any of 
 
 ### Deploying on Docker
 
-You can run the service that we developed above as a docker container. As Ballerina platform offers native support for running ballerina programs on 
-containers, you just need to put the corresponding docker annotations on your service code. 
+You can run the service that we developed above as a Docker container. As Ballerina platform offers native support for running ballerina programs on 
+containers, you just need to put the corresponding Docker annotations on your service code. 
 
-- In our ballerina_petstore, we need to import  `` import ballerinax/docker; `` and use the annotation `` @docker:Config `` as shown below to enable docker image generation during the build time. 
+- In our ballerina_petstore, we need to import  `` import ballerinax/docker; `` and use the annotation `` @docker:Config `` as shown below to enable Docker image generation during the build time. 
 
 ##### BallerinaPetstore.bal
 ```ballerina
@@ -494,21 +494,21 @@ service<http:Service> BallerinaPetstore bind ep0 {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image using the docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command.  
+This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command.  
 ```
   $ballerina build petstore
   
-  Run following command to start docker container: 
+  Run following command to start Docker container: 
   docker run -d -p 9090:9090 ballerina.guides.io/petstore:v1.0
 ```
-- Once you successfully build the docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
+- Once you successfully build the Docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
 ```   
     docker run -d -p 9090:9090 ballerina.guides.io/petstore:v1.0
 ```
-    Here we run the docker image with flag`` -p <host_port>:<container_port>`` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
+    Here we run the Docker image with flag`` -p <host_port>:<container_port>`` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
-- Verify docker container is running with the use of `` $ docker ps``. The status of the docker container should be shown as 'Up'. 
+- Verify Docker container is running with the use of `` $ docker ps``. The status of the Docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
  
 ```
@@ -520,8 +520,8 @@ This will also create the corresponding docker image using the docker annotation
 ### Deploying on Kubernetes
 
 - You can run the service that we developed above, on Kubernetes. The Ballerina language offers native support for running a ballerina programs on Kubernetes, 
-with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the docker images. 
-So you don't need to explicitly create docker images prior to deploying it on Kubernetes.   
+with the use of Kubernetes annotations that you can include as part of your service code. Also, it will take care of the creation of the Docker images. 
+So you don't need to explicitly create Docker images prior to deploying it on Kubernetes.   
 
 - We need to import `` import ballerinax/kubernetes; `` and use `` @kubernetes `` annotations as shown below to enable kubernetes deployment for the service we developed above. 
 
@@ -561,12 +561,12 @@ endpoint http:ServiceEndpoint ep0 {
 }
 service<http:Service> BallerinaPetstore bind ep0 {
 ``` 
-- Here we have used ``  @kubernetes:Deployment `` to specify the docker image name which will be created as part of building this service. 
+- Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name which will be created as part of building this service. 
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
 - In addition we have used `` @kubernetes:Ingress `` which is the external interface to access your service (with path `` /`` and host name ``ballerina.guides.io``)
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
-This will also create the corresponding docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
+This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
 ```
   $ballerina build petstore
@@ -576,7 +576,7 @@ This will also create the corresponding docker image and the Kubernetes artifact
  
 ```
 
-- You can verify that the docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
+- You can verify that the Docker image that we specified in `` @kubernetes:Deployment `` is created, by using `` docker ps images ``. 
 - Also the Kubernetes artifacts related our service, will be generated in `` ./target/petstore/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
@@ -661,7 +661,7 @@ Follow the following steps to use tracing with Ballerina.
    reporter.max.buffer.spans=1000
 ```
 
-- Run Jaeger docker image using the following command
+- Run Jaeger Docker image using the following command
 ```bash
    $ docker run -d -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 \
    -p14268:14268 jaegertracing/all-in-one:latest
@@ -710,9 +710,9 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
          - targets: ['172.17.0.1:9797']
 ```
 
-   NOTE : Replace `172.17.0.1` if your local docker IP differs from `172.17.0.1`
+   NOTE : Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`
    
-- Run the Prometheus docker image using the following command
+- Run the Prometheus Docker image using the following command
 ```
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus

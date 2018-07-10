@@ -120,7 +120,7 @@ service BallerinaPetstore bind ep0 {
         path:"/pet/{petId}"
     }
     deletePet (endpoint outboundEp, http:Request req, int petId) {
-        http:Response res = deletePet(req, petId);
+        http:Response res = deletePet(req, untaint petId);
         outboundEp->respond(res) but { error e => log:printError("Error while responding", err = e) };
     }
 

@@ -1,4 +1,4 @@
-public type Pet {
+public type Pet record {
     string id,
     string category,
     string name,
