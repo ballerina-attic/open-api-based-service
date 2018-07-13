@@ -157,46 +157,40 @@ endpoint http:Listener ep0 {
 service BallerinaPetstore bind ep0 {
 
     @swagger:ResourceInfo {
-        tags: ["pet"],
         summary: "Update an existing pet",
-        description: "",
-        externalDocs: {  },
-        parameters: [
-        ]
+        tags: ["pet"]
     }
     @http:ResourceConfig { 
         methods:["PUT"],
-        path:"/pet"
+        path:"/pet",
+        body:"petDetails"
     }
-    updatePet (endpoint outboundEp, http:Request req) {
-        http:Response res = updatePet(req);
+    updatePet (endpoint outboundEp, http:Request req, Pet petDetails) {
+        http:Response res = updatePet(req, petDetails);
         outboundEp->respond(res) but { error e => log:printError("Error while responding",
             err = e) };
     }
 
     @swagger:ResourceInfo {
-        tags: ["pet"],
         summary: "Add a new pet to the store",
-        description: "",
-        externalDocs: {  },
-        parameters: [
-        ]
+        tags: ["pet"]
     }
     @http:ResourceConfig { 
         methods:["POST"],
-        path:"/pet"
+        path:"/pet",
+        body:"petDetails"
+
     }
-    addPet (endpoint outboundEp, http:Request req) {
-        http:Response res = addPet(req);
+    addPet (endpoint outboundEp, http:Request req, Pet petDetails) {
+        http:Response res = addPet(req, petDetails);
         outboundEp->respond(res) but { error e => log:printError("Error while responding",
             err = e) };
     }
 
     @swagger:ResourceInfo {
-        tags: ["pet"],
         summary: "Find pet by ID",
+        tags: ["pet"],
         description: "Returns a single pet",
-        externalDocs: {  },
         parameters: [
             {
                 name: "petId",
@@ -211,17 +205,15 @@ service BallerinaPetstore bind ep0 {
         methods:["GET"],
         path:"/pet/{petId}"
     }
-    getPetById (endpoint outboundEp, http:Request req, int petId) {
+    getPetById (endpoint outboundEp, http:Request req, string petId) {
         http:Response res = getPetById(req, petId);
         outboundEp->respond(res) but { error e => log:printError("Error while responding",
             err = e) };
     }
 
     @swagger:ResourceInfo {
-        tags: ["pet"],
         summary: "Deletes a pet",
-        description: "",
-        externalDocs: {  },
+        tags: ["pet"],
         parameters: [
             {
                 name: "petId",
@@ -258,112 +250,77 @@ import ballerina/mime;
 
 map petData;
 
-public function addPet(http:Request req) returns http:Response {
+public function addPet(http:Request req, Pet petDetails) returns http:Response {
 
     // Initialize the http response message
     http:Response resp;
-    // Retrieve the data about pets from the json payload of the request
-    var reqesetPayloadData = req.getJsonPayload();
-    // Match the json payload with json and errors
-    match reqesetPayloadData {
-        // If the req.getJsonPayload() returns JSON
-        json petDataJson => {
-            // Transform into Pet data structure
-            Pet petDetails = check <Pet>petDataJson;
-            if (petDetails.id == "") {
-                // Send bad request message if request doesn't contain valid pet id
-                resp.setTextPayload("Error : Please provide the json payload with `id`,
-                `category` and `name`");
-                // set the response code as 400 to indicate a bad request
-                resp.statusCode = 400;
-            }
-            else {
-                // Add the pet details into the in memory map
-                petData[petDetails.id] = petDetails;
-                // Send back the status message back to the client
-                string payload = "Pet added successfully : Pet ID = " + petDetails.id;
-                resp.setTextPayload(untaint payload);
-            }
-        }
-        error => {
-            // Send bad request message if request doesn't contain valid pet data
-            resp.setTextPayload("Error : Please provide the json payload with `id`,
-            `category` and `name`");
-            // set the response code as 400 to indicate a bad request
-            resp.statusCode = 400;
-        }
+    // Access payload data which transformed from JSON to Pet data structure
+    if (petDetails.id == "") {
+        // Send bad request message to the client if request doesn't contain valid pet id
+        resp.setTextPayload("Error : Please provide the json payload with `id`,`catogery` and `name`");
+        // set the response code as 400 to indicate a bad request
+        resp.statusCode = 400;
+    }
+    else {
+        // Add the pet details into the in memory map
+        petData[petDetails.id] = petDetails;
+        // Send back the status message back to the client
+        string payload = "Pet added successfully : Pet ID = " + petDetails.id;
+        resp.setTextPayload(untaint payload);
     }
     return resp;
 }
 
-public function updatePet(http:Request req) returns http:Response {
+public function updatePet(http:Request req, Pet petDetails) returns http:Response {
 
     // Initialize the http response message
     http:Response resp;
-    // Retrieve the data about pets from the json payload of the request
-    var reqesetPayloadData = req.getJsonPayload();
-    // Match the json payload with json and errors
-    match reqesetPayloadData {
-        // If the req.getJsonPayload() returns JSON
-        json petDataJson => {
-            // Transform into Pet data structure
-            Pet petDetails = check <Pet>petDataJson;
-            if (petDetails.id == "" || !petData.hasKey(petDetails.id)) {
-                // Send bad request message if request doesn't contain valid pet id
-                resp.setTextPayload("Error : provide the json payload with valid `id``");
-                // set the response code as 400 to indicate a bad request
-                resp.statusCode = 400;
-            }
-            else {
-                // Update the pet details in the map
-                petData[petDetails.id] = petDetails;
-                // Send back the status message back to the client
-                string payload = "Pet updated successfully : Pet ID = " + petDetails.id;
-                resp.setTextPayload(untaint payload);
-            }
-        }
-
-        error => {
-            // Send bad request message if request doesn't contain valid pet data
-            resp.setTextPayload("Error : Please provide the json payload with `id`,
-            `category` and `name`");
-            // set the response code as 400 to indicate a bad request
-            resp.statusCode = 400;
-        }
+    // Access payload data which transformed from JSON to Pet data structure
+    if (petDetails.id == "" || !petData.hasKey(petDetails.id)) {
+        // Send bad request message to the client if request doesn't contain valid pet id
+        resp.setTextPayload("Error : Please provide the json payload with valid `id``");
+        // set the response code as 400 to indicate a bad request
+        resp.statusCode = 400;
+    }
+    else {
+        // Update the pet details in the map
+        petData[petDetails.id] = petDetails;
+        // Send back the status message back to the client
+        string payload = "Pet updated successfully : Pet ID = " + petDetails.id;
+        resp.setTextPayload(untaint payload);
     }
     return resp;
-
 }
 
-public function getPetById(http:Request req, int petId) returns http:Response {
+public function getPetById(http:Request req, string petId) returns http:Response {
     // Initialize http response message to send back to the client
     http:Response resp;
     // Send bad request message to client if pet ID cannot found in petData map
-    if (!petData.hasKey(<string>petId)) {
+    if (!petData.hasKey(petId)) {
         resp.setTextPayload("Error : Invalid Pet ID");
         // set the response code as 400 to indicate a bad request
         resp.statusCode = 400;
     }
     else {
         // Set the pet data as the payload and send back the response
-        var payload = <string>petData[<string>petId];
+        var payload = <string>petData[petId];
         resp.setTextPayload(untaint payload);
     }
     return resp;
 }
 
-public function deletePet(http:Request req, int petId) returns http:Response {
+public function deletePet(http:Request req, string petId) returns http:Response {
     // Initialize http response message
     http:Response resp;
     // Send bad request message to client if pet ID cannot found in petData map
-    if (!petData.hasKey(<string>petId)) {
+    if (!petData.hasKey(petId)) {
         resp.setTextPayload("Error : Invalid Pet ID");
         // set the response code as 400 to indicate a bad request
         resp.statusCode = 400;
     }
     else {
         // Remove the pet data from the petData map
-        _ = petData.remove(<string>petId);
+        _ = petData.remove(petId);
         // Send the status back to the client
         string payload = "Deleted pet data successfully : Pet ID = " + petId;
         resp.setTextPayload(payload);

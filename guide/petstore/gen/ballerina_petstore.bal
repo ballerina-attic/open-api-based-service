@@ -16,6 +16,7 @@
 
 import ballerina/log;
 import ballerina/http;
+import ballerina/mime;
 import ballerina/swagger;
 
 endpoint http:Listener ep0 { 
@@ -43,44 +44,37 @@ endpoint http:Listener ep0 {
 service BallerinaPetstore bind ep0 {
 
     @swagger:ResourceInfo {
-        tags: ["pet"],
         summary: "Update an existing pet",
-        description: "",
-        externalDocs: {  },
-        parameters: [
-        ]
+        tags: ["pet"]
     }
     @http:ResourceConfig { 
         methods:["PUT"],
-        path:"/pet"
+        path:"/pet",
+        body:"petDetails"
     }
-    updatePet (endpoint outboundEp, http:Request req) {
-        http:Response res = updatePet(req);
+    updatePet (endpoint outboundEp, http:Request req, Pet petDetails) {
+        http:Response res = updatePet(req, petDetails);
         outboundEp->respond(res) but { error e => log:printError("Error while responding", err = e) };
     }
 
     @swagger:ResourceInfo {
-        tags: ["pet"],
         summary: "Add a new pet to the store",
-        description: "",
-        externalDocs: {  },
-        parameters: [
-        ]
+        tags: ["pet"]
     }
     @http:ResourceConfig { 
         methods:["POST"],
-        path:"/pet"
+        path:"/pet",
+        body:"petDetails"
     }
-    addPet (endpoint outboundEp, http:Request req) {
-        http:Response res = addPet(req);
+    addPet (endpoint outboundEp, http:Request req, Pet petDetails) {
+        http:Response res = addPet(req, petDetails);
         outboundEp->respond(res) but { error e => log:printError("Error while responding", err = e) };
     }
 
     @swagger:ResourceInfo {
-        tags: ["pet"],
         summary: "Find pet by ID",
+        tags: ["pet"],
         description: "Returns a single pet",
-        externalDocs: {  },
         parameters: [
             {
                 name: "petId",
@@ -95,16 +89,14 @@ service BallerinaPetstore bind ep0 {
         methods:["GET"],
         path:"/pet/{petId}"
     }
-    getPetById (endpoint outboundEp, http:Request req, int petId) {
+    getPetById (endpoint outboundEp, http:Request req, string petId) {
         http:Response res = getPetById(req, petId);
         outboundEp->respond(res) but { error e => log:printError("Error while responding", err = e) };
     }
 
     @swagger:ResourceInfo {
-        tags: ["pet"],
         summary: "Deletes a pet",
-        description: "",
-        externalDocs: {  },
+        tags: ["pet"],
         parameters: [
             {
                 name: "petId",
@@ -119,7 +111,7 @@ service BallerinaPetstore bind ep0 {
         methods:["DELETE"],
         path:"/pet/{petId}"
     }
-    deletePet (endpoint outboundEp, http:Request req, int petId) {
+    deletePet (endpoint outboundEp, http:Request req, string petId) {
         http:Response res = deletePet(req, untaint petId);
         outboundEp->respond(res) but { error e => log:printError("Error while responding", err = e) };
     }
