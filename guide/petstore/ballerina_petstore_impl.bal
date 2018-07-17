@@ -42,7 +42,7 @@ public function addPet(http:Request req) returns http:Response {
                 petData[petDetails.id] = petDetails;
                 // Send back the status message back to the client
                 string payload = "Pet added successfully : Pet ID = " + petDetails.id;
-                resp.setTextPayload(payload);
+                resp.setTextPayload(untaint payload);
             }
         }
         error => {
@@ -78,7 +78,7 @@ public function updatePet(http:Request req) returns http:Response {
                 petData[petDetails.id] = petDetails;
                 // Send back the status message back to the client
                 string payload = "Pet updated successfully : Pet ID = " + petDetails.id;
-                resp.setTextPayload(payload);
+                resp.setTextPayload(untaint payload);
             }
         }
 
@@ -105,7 +105,7 @@ public function getPetById(http:Request req, int petId) returns http:Response {
     else {
         // Set the pet data as the payload and send back the response
         var payload = <string>petData[<string>petId];
-        resp.setTextPayload(payload);
+        resp.setTextPayload(untaint payload);
     }
     return resp;
 }

@@ -22,21 +22,7 @@ endpoint http:Client httpEndpoint {
     url: "http://localhost:9090/v1"
 };
 
-function beforeFunction() {
-    // Start petStore service
-    _ = test:startServices("petstore");
-}
-
-function afterFunction() {
-    // Start petStore service
-    test:stopServices("petstore");
-}
-
-
-@test:Config {
-    before: "beforeFunction",
-    after: "afterFunction"
-}
+@test:Config
 function testPetStore() {
     // Prepare sample pet data to test the petStore service
     json samplePet = { "id": 1, "category": "dog", "name": "doggie" };
