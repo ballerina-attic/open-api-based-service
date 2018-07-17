@@ -579,7 +579,7 @@ curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
 
 ## Observability 
 Ballerina is by default observable. Meaning you can easily observe your services, resources, etc.
-However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file in `open-api-based-service/guide/`.
+However, observability is disabled by default via configuration. Observability can be enabled by adding following configurations to `ballerina.conf` file and starting the ballerina service using it. A sample configuration file can be found in `open-api-based-service/guide/petstore`.
 
 ```ballerina
 [b7a.observability]
@@ -593,6 +593,10 @@ enabled=true
 enabled=true
 ```
 
+To start the ballerina service using the configuration file, run the following command
+```
+   $ ballerina run --config petstore/ballerina.conf petstore
+```
 NOTE: The above configuration is the minimum configuration needed to enable tracing and metrics. With these configurations default values are load as the other configuration parameters of metrics and tracing.
 
 ### Tracing 
@@ -624,9 +628,9 @@ Follow the following steps to use tracing with Ballerina.
    -p14268:14268 jaegertracing/all-in-one:latest
 ```
 
-- Navigate to `open-api-based-service/guide` and run the restful-service using following command 
+- Navigate to `open-api-based-service/guide` and run the restful-service using the following command
 ```
-   $ ballerina run petstore
+   $ ballerina run --config petstore/ballerina.conf petstore
 ```
 
 - Observe the tracing using Jaeger UI using following URL
@@ -640,19 +644,14 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
 
 - You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
 
-```ballerina
+```
    [b7a.observability.metrics]
    enabled=true
-   provider="micrometer"
-
-   [b7a.observability.metrics.micrometer]
-   registry.name="prometheus"
+   reporter="prometheus"
 
    [b7a.observability.metrics.prometheus]
-   port=9700
-   hostname="0.0.0.0"
-   descriptions=false
-   step="PT1M"
+   port=9797
+   host="0.0.0.0"
 ```
 
 - Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
@@ -674,7 +673,12 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
 ```
-   
+
+- Navigate to `open-api-based-service/guide` and run the restful-service using the following command
+```
+  $ ballerina run --config petstore/ballerina.conf petstore
+```
+
 - You can access Prometheus at the following URL
 ```
    http://localhost:19090/
