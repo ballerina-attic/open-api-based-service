@@ -344,7 +344,7 @@ $ ballerina run petstore
 
 **Add a new pet** 
 ```
-curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' 
+curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
 "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
 
 Output :  
@@ -361,7 +361,7 @@ Output:
 
 **Update pet data** 
 ```
-curl -X PUT -d '{"id":1, "category":"dog-updated", "name":"Updated-doggie"}' 
+curl -X PUT -d '{"id":1, "category":"dog-updated", "name":"Updated-doggie"}' \
 "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
 
 Output: 
