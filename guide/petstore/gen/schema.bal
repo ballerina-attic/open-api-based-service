@@ -15,7 +15,7 @@
 // under the License.
 
 public type Pet record {
-    string id,
-    string category,
-    string name,
+    string id;
+    string category;
+    string name;
 };
