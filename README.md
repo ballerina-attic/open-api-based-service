@@ -95,19 +95,19 @@ open-api-based-service
 
 Ballerina language is capable of understanding the Swagger / OpenAPI specifications. We can easily generate the web service just by typing the following command structure in the terminal.
 ```
-ballerina swagger mock <swaggerFile> [-o <output directory name>] [-p <package name>] 
+ballerina swagger mock <swaggerFile> [-o <output directory name>] [-m <module name>] 
 ```
 
 For our pet store service we need to run the following command from the `/guide` in sample root directory(location where you have the petstore.json file) to generate the Ballerina service from the OpenAPI / Swagger definition
 
 ```bash 
-$ ballerina swagger mock petstore.json -p petstore
+$ ballerina swagger mock petstore.json -m petstore
 ```
 
-The `-p` flag indicates the package name and `-o` flag indicates the file destination for the web service. These parameters are optional and can be used to have a customized package name and file location for the project.
+The `-m` flag indicates the module name and `-o` flag indicates the file destination for the web service. These parameters are optional and can be used to have a customized module name and file location for the project.
 
-#### Generated ballerina packages 
-After running the above command, the pet store web service will be auto-generated. Now the package structure is similar to the following,
+#### Generated ballerina modules 
+After running the above command, the pet store web service will be auto-generated. Now the module structure is similar to the following,
 
 ```
 └── open-api-based-service
@@ -378,7 +378,7 @@ Deleted pet data successfully: Pet ID = 1
 
 ### Writing Unit Tests 
 
-In Ballerina, the unit test cases should be in the same package inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
+In Ballerina, the unit test cases should be in the same module inside a folder named as 'tests'.  When writing the test functions the below convention should be followed.
 - Test functions should be annotated with `@test:Config`. See the below example.
 ```ballerina
    @test:Config
@@ -698,7 +698,7 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 
 ### Logging
 
-Ballerina has a log package for logging to the console. You can import ballerina/log package and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
+Ballerina has a log module for logging to the console. You can import ballerina/log module and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
 - Start the Ballerina Service with the following command from `open-api-based-service/guide`
 ```
