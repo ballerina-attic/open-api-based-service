@@ -16,8 +16,9 @@
 
 import ballerina/http;
 import ballerina/mime;
+import ballerina/io;
 
-map<any> petData = {};
+map<Pet> petData = {};
 
 public function addPet(http:Request req, Pet petDetails) returns http:Response {
 
@@ -72,7 +73,7 @@ public function getPetById(http:Request req, string petId) returns http:Response
     }
     else {
         // Set the pet data as the payload and send back the response
-        var payload = <string>petData[petId];
+        var payload = io:sprintf("%s", petData[petId]);
         resp.setTextPayload(untaint payload);
     }
     return resp;

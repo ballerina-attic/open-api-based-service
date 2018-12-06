@@ -127,64 +127,56 @@ After running the above command, the pet store web service will be auto-generate
 #### Generated `ballerina_petstore.bal` file
   
 ```ballerina
-import ballerina/log;
 import ballerina/http;
+import ballerina/log;
+import ballerina/mime;
 import ballerina/swagger;
 
-endpoint http:Listener ep0 { 
-    host: "localhost",
-    port: 9090
-};
+listener http:Listener ep0 = new(9090, config = {host: "localhost"});
 
-@swagger:ServiceInfo { 
+@swagger:ServiceInfo {
     title: "Ballerina Petstore",
-    description: "This is a sample Petstore server.",
+    description: "This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
     serviceVersion: "1.0.0",
     termsOfService: "http://ballerina.io/terms/",
     contact: {name: "", email: "samples@ballerina.io", url: ""},
     license: {name: "Apache 2.0", url: "http://www.apache.org/licenses/LICENSE-2.0.html"},
     tags: [
-        {name: "pet", description: "Everything about your Pets", externalDocs:
-        { description: "Find out more", url: "http://ballerina.io" } }
+        {name: "pet", description: "Everything about your Pets", externalDocs: {description: "Find out more", url: "http://ballerina.io"}}
     ],
-    externalDocs: { description: "Find out about Ballerina", url: "http://ballerina.io" },
-    security: [
-    ]
+    externalDocs: {description: "Find out more about Ballerina", url: "http://ballerina.io"}
 }
 @http:ServiceConfig {
     basePath: "/v1"
 }
-service BallerinaPetstore bind ep0 {
+service BallerinaPetstore on ep0 {
 
     @swagger:ResourceInfo {
         summary: "Update an existing pet",
         tags: ["pet"]
     }
-    @http:ResourceConfig { 
+    @http:ResourceConfig {
         methods:["PUT"],
         path:"/pet",
-        body:"petDetails"
+        body:"_updatePetBody"
     }
-    updatePet (endpoint outboundEp, http:Request req, Pet petDetails) {
-        http:Response res = updatePet(req, petDetails);
-        outboundEp->respond(res) but { error e => log:printError("Error while responding",
-            err = e) };
+    resource function updatePet (http:Caller outboundEp, http:Request _updatePetReq, Pet _updatePetBody) {
+        http:Response _updatePetRes = updatePet(_updatePetReq, _updatePetBody);
+        _ = outboundEp->respond(_updatePetRes);
     }
 
     @swagger:ResourceInfo {
         summary: "Add a new pet to the store",
         tags: ["pet"]
     }
-    @http:ResourceConfig { 
+    @http:ResourceConfig {
         methods:["POST"],
         path:"/pet",
-        body:"petDetails"
-
+        body:"_addPetBody"
     }
-    addPet (endpoint outboundEp, http:Request req, Pet petDetails) {
-        http:Response res = addPet(req, petDetails);
-        outboundEp->respond(res) but { error e => log:printError("Error while responding",
-            err = e) };
+    resource function addPet (http:Caller outboundEp, http:Request _addPetReq, Pet _addPetBody) {
+        http:Response _addPetRes = addPet(_addPetReq, _addPetBody);
+        _ = outboundEp->respond(_addPetRes);
     }
 
     @swagger:ResourceInfo {
@@ -195,20 +187,20 @@ service BallerinaPetstore bind ep0 {
             {
                 name: "petId",
                 inInfo: "path",
-                description: "ID of pet to return", 
-                required: true, 
+                paramType: "string",
+                description: "ID of pet to return",
+                required: true,
                 allowEmptyValue: ""
             }
         ]
     }
-    @http:ResourceConfig { 
+    @http:ResourceConfig {
         methods:["GET"],
         path:"/pet/{petId}"
     }
-    getPetById (endpoint outboundEp, http:Request req, string petId) {
-        http:Response res = getPetById(req, petId);
-        outboundEp->respond(res) but { error e => log:printError("Error while responding",
-            err = e) };
+    resource function getPetById (http:Caller outboundEp, http:Request _getPetByIdReq, string petId) {
+        http:Response _getPetByIdRes = getPetById(_getPetByIdReq, petId);
+        _ = outboundEp->respond(_getPetByIdRes);
     }
 
     @swagger:ResourceInfo {
@@ -218,24 +210,23 @@ service BallerinaPetstore bind ep0 {
             {
                 name: "petId",
                 inInfo: "path",
-                description: "Pet id to delete", 
-                required: true, 
+                paramType: "int",
+                description: "Pet id to delete",
+                required: true,
                 allowEmptyValue: ""
             }
         ]
     }
-    @http:ResourceConfig { 
+    @http:ResourceConfig {
         methods:["DELETE"],
         path:"/pet/{petId}"
     }
-    deletePet (endpoint outboundEp, http:Request req, int petId) {
-        http:Response res = deletePet(req, untaint petId);
-        outboundEp->respond(res) but { error e => log:printError("Error while responding",
-            err = e) };
+    resource function deletePet (http:Caller outboundEp, http:Request _deletePetReq, int petId) {
+        http:Response _deletePetRes = deletePet(_deletePetReq, petId);
+        _ = outboundEp->respond(_deletePetRes);
     }
 
 }
-
 ```
 
 Next we need to implement the business logic in the `ballerina_petstore_impl.bal` file.
