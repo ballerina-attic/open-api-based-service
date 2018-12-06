@@ -18,9 +18,7 @@ import ballerina/http;
 import ballerina/test;
 
 // Create a connection with petStore service endpoint
-endpoint http:Client httpEndpoint {
-    url: "http://localhost:9090/v1"
-};
+http:Client httpEndpoint = new("http://localhost:9090/v1");
 
 @test:Config
 function testPetStore() {

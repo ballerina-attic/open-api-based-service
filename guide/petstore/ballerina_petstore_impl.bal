@@ -17,12 +17,12 @@
 import ballerina/http;
 import ballerina/mime;
 
-map petData;
+map<any> petData = {};
 
 public function addPet(http:Request req, Pet petDetails) returns http:Response {
 
     // Initialize the http response message
-    http:Response resp;
+    http:Response resp = new;
     // Access payload data which transformed from JSON to Pet data structure
     if (petDetails.id == "") {
         // Send bad request message to the client if request doesn't contain valid pet id
@@ -43,7 +43,7 @@ public function addPet(http:Request req, Pet petDetails) returns http:Response {
 public function updatePet(http:Request req, Pet petDetails) returns http:Response {
 
     // Initialize the http response message
-    http:Response resp;
+    http:Response resp = new;
     // Access payload data which transformed from JSON to Pet data structure
     if (petDetails.id == "" || !petData.hasKey(petDetails.id)) {
         // Send bad request message to the client if request doesn't contain valid pet id
@@ -63,7 +63,7 @@ public function updatePet(http:Request req, Pet petDetails) returns http:Respons
 
 public function getPetById(http:Request req, string petId) returns http:Response {
     // Initialize http response message to send back to the client
-    http:Response resp;
+    http:Response resp = new;
     // Send bad request message to client if pet ID cannot found in petData map
     if (!petData.hasKey(petId)) {
         resp.setTextPayload("Error : Invalid Pet ID");
@@ -80,7 +80,7 @@ public function getPetById(http:Request req, string petId) returns http:Response
 
 public function deletePet(http:Request req, string petId) returns http:Response {
     // Initialize http response message
-    http:Response resp;
+    http:Response resp = new;
     // Send bad request message to client if pet ID cannot found in petData map
     if (!petData.hasKey(petId)) {
         resp.setTextPayload("Error : Invalid Pet ID");
