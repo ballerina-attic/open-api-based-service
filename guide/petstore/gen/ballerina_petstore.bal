@@ -19,7 +19,7 @@ import ballerina/http;
 import ballerina/mime;
 import ballerina/swagger;
 
-listener http:Listener ep0 = new(9090, config = {host: "localhost"});
+listener http:Listener ep0 = new(9090);
 
 @swagger:ServiceInfo { 
     title: "Ballerina Petstore",

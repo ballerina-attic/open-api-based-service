@@ -132,7 +132,7 @@ import ballerina/log;
 import ballerina/mime;
 import ballerina/swagger;
 
-listener http:Listener ep0 = new(9090, config = {host: "localhost"});
+listener http:Listener ep0 = new(9090);
 
 @swagger:ServiceInfo {
     title: "Ballerina Petstore",
@@ -426,7 +426,7 @@ import ballerinax/docker;
 }
 
 @docker:Expose{}
-listener http:Listener ep0 = new(9090, config = {host: "localhost"});
+listener http:Listener ep0 = new(9090);
 
 // 'petData' Map definition
 
@@ -494,7 +494,7 @@ import ballerinax/kubernetes;
   name:"ballerina-guides-petstore"
 }
 
-listener http:Listener ep0 = new(9090, config = {host: "localhost"});
+listener http:Listener ep0 = new(9090);
 
 // 'petData' Map definition
 
