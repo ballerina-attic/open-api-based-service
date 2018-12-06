@@ -426,10 +426,7 @@ import ballerinax/docker;
 }
 
 @docker:Expose{}
-endpoint http:ServiceEndpoint ep0 {
-    host:"localhost",
-    port:9090
-};
+listener http:Listener ep0 = new(9090, config = {host: "localhost"});
 
 // 'petData' Map definition
 
@@ -438,7 +435,7 @@ endpoint http:ServiceEndpoint ep0 {
 @http:ServiceConfig {
     basePath:"/v1"
 }
-service<http:Service> BallerinaPetstore bind ep0 {
+service BallerinaPetstore on ep0 {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
@@ -497,10 +494,7 @@ import ballerinax/kubernetes;
   name:"ballerina-guides-petstore"
 }
 
-endpoint http:ServiceEndpoint ep0 {
-    host:"localhost",
-    port:9090
-};
+listener http:Listener ep0 = new(9090, config = {host: "localhost"});
 
 // 'petData' Map definition
 
@@ -509,7 +503,7 @@ endpoint http:ServiceEndpoint ep0 {
 @http:ServiceConfig {
     basePath:"/v1"
 }
-service<http:Service> BallerinaPetstore bind ep0 {
+service BallerinaPetstore on ep0 {
 ``` 
 - Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name which will be created as part of building this service. 
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  
