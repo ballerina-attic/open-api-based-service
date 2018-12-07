@@ -149,34 +149,66 @@ listener http:Listener ep0 = new(9090);
 @http:ServiceConfig {
     basePath: "/v1"
 }
+import ballerina/log;
+import ballerina/http;
+import ballerina/mime;
+import ballerina/swagger;
+
+listener http:Listener ep0 = new(9090);
+
+@swagger:ServiceInfo { 
+    title: "Ballerina Petstore",
+    description: "This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
+    serviceVersion: "1.0.0",
+    termsOfService: "http://ballerina.io/terms/",
+    contact: {name: "", email: "samples@ballerina.io", url: ""},
+    license: {name: "Apache 2.0", url: "http://www.apache.org/licenses/LICENSE-2.0.html"},
+    tags: [
+        {name: "pet", description: "Everything about your Pets", externalDocs: { description: "Find out more", url: "http://ballerina.io" } }
+    ],
+    externalDocs: { description: "Find out more about Ballerina", url: "http://ballerina.io" },
+    security: [
+    ]
+}
+@http:ServiceConfig {
+    basePath: "/v1"
+}
 service BallerinaPetstore on ep0 {
 
     @swagger:ResourceInfo {
         summary: "Update an existing pet",
         tags: ["pet"]
     }
-    @http:ResourceConfig {
+    @http:ResourceConfig { 
         methods:["PUT"],
         path:"/pet",
-        body:"_updatePetBody"
+        body:"petDetails"
     }
-    resource function updatePet (http:Caller outboundEp, http:Request _updatePetReq, Pet _updatePetBody) {
-        http:Response _updatePetRes = updatePet(_updatePetReq, _updatePetBody);
-        _ = outboundEp->respond(_updatePetRes);
+    resource function updatePet (http:Caller outboundEp, http:Request req, Pet petDetails) {
+        http:Response res = updatePet(req, petDetails);
+        var result = outboundEp->respond(res);
+
+        if (result is error) {
+            log:printError("Error while responding", err = result);
+        }
     }
 
     @swagger:ResourceInfo {
         summary: "Add a new pet to the store",
         tags: ["pet"]
     }
-    @http:ResourceConfig {
+    @http:ResourceConfig { 
         methods:["POST"],
         path:"/pet",
-        body:"_addPetBody"
+        body:"petDetails"
     }
-    resource function addPet (http:Caller outboundEp, http:Request _addPetReq, Pet _addPetBody) {
-        http:Response _addPetRes = addPet(_addPetReq, _addPetBody);
-        _ = outboundEp->respond(_addPetRes);
+    resource function addPet (http:Caller outboundEp, http:Request req, Pet petDetails) {
+        http:Response res = addPet(req, petDetails);
+        var result = outboundEp->respond(res);
+
+        if (result is error) {
+            log:printError("Error while responding", err = result);
+        }
     }
 
     @swagger:ResourceInfo {
@@ -187,20 +219,23 @@ service BallerinaPetstore on ep0 {
             {
                 name: "petId",
                 inInfo: "path",
-                paramType: "string",
-                description: "ID of pet to return",
-                required: true,
+                description: "ID of pet to return", 
+                required: true, 
                 allowEmptyValue: ""
             }
         ]
     }
-    @http:ResourceConfig {
+    @http:ResourceConfig { 
         methods:["GET"],
         path:"/pet/{petId}"
     }
-    resource function getPetById (http:Caller outboundEp, http:Request _getPetByIdReq, string petId) {
-        http:Response _getPetByIdRes = getPetById(_getPetByIdReq, petId);
-        _ = outboundEp->respond(_getPetByIdRes);
+    resource function getPetById (http:Caller outboundEp, http:Request req, string petId) {
+        http:Response res = getPetById(req, petId);
+        var result = outboundEp->respond(res);
+
+        if (result is error) {
+            log:printError("Error while responding", err = result);
+        }
     }
 
     @swagger:ResourceInfo {
@@ -210,22 +245,24 @@ service BallerinaPetstore on ep0 {
             {
                 name: "petId",
                 inInfo: "path",
-                paramType: "int",
-                description: "Pet id to delete",
-                required: true,
+                description: "Pet id to delete", 
+                required: true, 
                 allowEmptyValue: ""
             }
         ]
     }
-    @http:ResourceConfig {
+    @http:ResourceConfig { 
         methods:["DELETE"],
         path:"/pet/{petId}"
     }
-    resource function deletePet (http:Caller outboundEp, http:Request _deletePetReq, int petId) {
-        http:Response _deletePetRes = deletePet(_deletePetReq, petId);
-        _ = outboundEp->respond(_deletePetRes);
-    }
+    resource function deletePet (http:Caller outboundEp, http:Request req, string petId) {
+        http:Response res = deletePet(req, untaint petId);
+        var result = outboundEp->respond(res);
 
+        if (result is error) {
+            log:printError("Error while responding", err = result);
+        }
+    }
 }
 ```
 
