@@ -127,34 +127,29 @@ After running the above command, the pet store web service will be auto-generate
 #### Generated `ballerina_petstore.bal` file
   
 ```ballerina
-import ballerina/log;
 import ballerina/http;
+import ballerina/log;
+import ballerina/mime;
 import ballerina/swagger;
 
-endpoint http:Listener ep0 { 
-    host: "localhost",
-    port: 9090
-};
+listener http:Listener ep0 = new(9090);
 
-@swagger:ServiceInfo { 
+@swagger:ServiceInfo {
     title: "Ballerina Petstore",
-    description: "This is a sample Petstore server.",
+    description: "This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
     serviceVersion: "1.0.0",
     termsOfService: "http://ballerina.io/terms/",
     contact: {name: "", email: "samples@ballerina.io", url: ""},
     license: {name: "Apache 2.0", url: "http://www.apache.org/licenses/LICENSE-2.0.html"},
     tags: [
-        {name: "pet", description: "Everything about your Pets", externalDocs:
-        { description: "Find out more", url: "http://ballerina.io" } }
+        {name: "pet", description: "Everything about your Pets", externalDocs: {description: "Find out more", url: "http://ballerina.io"}}
     ],
-    externalDocs: { description: "Find out about Ballerina", url: "http://ballerina.io" },
-    security: [
-    ]
+    externalDocs: {description: "Find out more about Ballerina", url: "http://ballerina.io"}
 }
 @http:ServiceConfig {
     basePath: "/v1"
 }
-service BallerinaPetstore bind ep0 {
+service BallerinaPetstore on ep0 {
 
     @swagger:ResourceInfo {
         summary: "Update an existing pet",
@@ -165,10 +160,13 @@ service BallerinaPetstore bind ep0 {
         path:"/pet",
         body:"petDetails"
     }
-    updatePet (endpoint outboundEp, http:Request req, Pet petDetails) {
+    resource function updatePet (http:Caller outboundEp, http:Request req, Pet petDetails) {
         http:Response res = updatePet(req, petDetails);
-        outboundEp->respond(res) but { error e => log:printError("Error while responding",
-            err = e) };
+        var result = outboundEp->respond(res);
+
+        if (result is error) {
+            log:printError("Error while responding", err = result);
+        }
     }
 
     @swagger:ResourceInfo {
@@ -179,12 +177,14 @@ service BallerinaPetstore bind ep0 {
         methods:["POST"],
         path:"/pet",
         body:"petDetails"
-
     }
-    addPet (endpoint outboundEp, http:Request req, Pet petDetails) {
+    resource function addPet (http:Caller outboundEp, http:Request req, Pet petDetails) {
         http:Response res = addPet(req, petDetails);
-        outboundEp->respond(res) but { error e => log:printError("Error while responding",
-            err = e) };
+        var result = outboundEp->respond(res);
+
+        if (result is error) {
+            log:printError("Error while responding", err = result);
+        }
     }
 
     @swagger:ResourceInfo {
@@ -205,10 +205,13 @@ service BallerinaPetstore bind ep0 {
         methods:["GET"],
         path:"/pet/{petId}"
     }
-    getPetById (endpoint outboundEp, http:Request req, string petId) {
+    resource function getPetById (http:Caller outboundEp, http:Request req, string petId) {
         http:Response res = getPetById(req, petId);
-        outboundEp->respond(res) but { error e => log:printError("Error while responding",
-            err = e) };
+        var result = outboundEp->respond(res);
+
+        if (result is error) {
+            log:printError("Error while responding", err = result);
+        }
     }
 
     @swagger:ResourceInfo {
@@ -228,14 +231,15 @@ service BallerinaPetstore bind ep0 {
         methods:["DELETE"],
         path:"/pet/{petId}"
     }
-    deletePet (endpoint outboundEp, http:Request req, int petId) {
+    resource function deletePet (http:Caller outboundEp, http:Request req, string petId) {
         http:Response res = deletePet(req, untaint petId);
-        outboundEp->respond(res) but { error e => log:printError("Error while responding",
-            err = e) };
+        var result = outboundEp->respond(res);
+
+        if (result is error) {
+            log:printError("Error while responding", err = result);
+        }
     }
-
 }
-
 ```
 
 Next we need to implement the business logic in the `ballerina_petstore_impl.bal` file.
@@ -435,10 +439,7 @@ import ballerinax/docker;
 }
 
 @docker:Expose{}
-endpoint http:ServiceEndpoint ep0 {
-    host:"localhost",
-    port:9090
-};
+listener http:Listener ep0 = new(9090);
 
 // 'petData' Map definition
 
@@ -447,7 +448,7 @@ endpoint http:ServiceEndpoint ep0 {
 @http:ServiceConfig {
     basePath:"/v1"
 }
-service<http:Service> BallerinaPetstore bind ep0 {
+service BallerinaPetstore on ep0 {
 ``` 
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
@@ -506,10 +507,7 @@ import ballerinax/kubernetes;
   name:"ballerina-guides-petstore"
 }
 
-endpoint http:ServiceEndpoint ep0 {
-    host:"localhost",
-    port:9090
-};
+listener http:Listener ep0 = new(9090);
 
 // 'petData' Map definition
 
@@ -518,7 +516,7 @@ endpoint http:ServiceEndpoint ep0 {
 @http:ServiceConfig {
     basePath:"/v1"
 }
-service<http:Service> BallerinaPetstore bind ep0 {
+service BallerinaPetstore on ep0 {
 ``` 
 - Here we have used ``  @kubernetes:Deployment `` to specify the Docker image name which will be created as part of building this service. 
 - We have also specified `` @kubernetes:Service `` so that it will create a Kubernetes service which will expose the Ballerina service that is running on a Pod.  

@@ -18,9 +18,7 @@ import ballerina/http;
 import ballerina/test;
 
 // Create a connection with petStore service endpoint
-endpoint http:Client httpEndpoint {
-    url: "http://localhost:9090/v1"
-};
+http:Client httpEndpoint = new("http://localhost:9090/v1");
 
 @test:Config
 function testPetStore() {
@@ -29,80 +27,78 @@ function testPetStore() {
     json updatedPet = { "id": 1, "category": "dog-updated", "name": "Updated-doggie" };
 
     // Initialize the empty http request and response
-    http:Request req;
-    http:Response resp;
+    http:Request req = new;
+    string expectedOutputString;
 
     // Test the addPet resource
     req.setJsonPayload(samplePet);
     // Send a request to the pet store service
-    resp = check httpEndpoint->post("/pet", req);
-    test:assertEquals(resp.statusCode, 200, msg =
-        "pet store service didnot respond with 200 OK signal");
-    string expectedOutputString = "Pet added successfully : Pet ID = 1";
-    // Assert the response message payload string
-    var receivedPayload1 = resp.getTextPayload();
-    match receivedPayload1 {
-        string receivedString => {
-            test:assertEquals(receivedString, expectedOutputString, msg =
-                "Reponse message not matched");
+    var resp = httpEndpoint->post("/pet", req);
+    if (resp is http:Response) {
+        test:assertEquals(resp.statusCode, 200, msg =
+            "pet store service didnot respond with 200 OK signal");
+        expectedOutputString = "Pet added successfully : Pet ID = 1";
+        // Assert the response message payload string
+        var receivedPayload1 = resp.getTextPayload();
+        if (receivedPayload1 is string) {
+            test:assertEquals(receivedPayload1, expectedOutputString, msg =
+                    "Reponse message not matched");
         }
-        error|() => {
-            return;
-        }
+    } else {
+        test:assertFail(msg = "Failed to obtain response:");
     }
 
     // Test the updatePet resource
     req = new;
     req.setJsonPayload(updatedPet);
     // Send a request to the pet store service
-    resp = check httpEndpoint->put("/pet", req);
-    test:assertEquals(resp.statusCode, 200, msg =
-        "pet store service didnot respond with 200 OK signal");
-    expectedOutputString = "Pet updated successfully : Pet ID = 1";
-    // Assert the response message payload string
-    var receivedPayload2 = resp.getTextPayload();
-    match receivedPayload2 {
-        string receivedString => {
-            test:assertEquals(receivedString, expectedOutputString, msg =
-                "Reponse message not matched");
+    resp = httpEndpoint->put("/pet", req);
+    if (resp is http:Response) {
+        test:assertEquals(resp.statusCode, 200, msg =
+            "pet store service didnot respond with 200 OK signal");
+        expectedOutputString = "Pet updated successfully : Pet ID = 1";
+        // Assert the response message payload string
+        var receivedPayload2 = resp.getTextPayload();
+        if (receivedPayload2 is string) {
+            test:assertEquals(receivedPayload2, expectedOutputString, msg =
+                    "Reponse message not matched");
         }
-        error|() => {
-            return;
-        }
+    } else {
+        test:assertFail(msg = "Failed to obtain response:");
     }
+
     // Test the getPetById resource
     req = new;
     // Send a request to the pet store service
-    resp = check httpEndpoint->get("/pet/1");
-    test:assertEquals(resp.statusCode, 200, msg =
-        "pet store service didnot respond with 200 OK signal");
-    // Assert the response message payload string
-    var receivedPayload3 = resp.getJsonPayload();
-    match receivedPayload3 {
-        json receivedJson => {
-            test:assertEquals(receivedJson, expectedOutputString, msg =
-                "Reponse message not matched");
+    resp = httpEndpoint->get("/pet/1");
+    if (resp is http:Response) {
+        test:assertEquals(resp.statusCode, 200, msg =
+            "pet store service didnot respond with 200 OK signal");
+        // Assert the response message payload string
+        var receivedPayload3 = resp.getJsonPayload();
+        if (receivedPayload3 is string) {
+            test:assertEquals(receivedPayload3, expectedOutputString, msg =
+                    "Reponse message not matched");
         }
-        error|() => {
-            return;
-        }
+    } else {
+        test:assertFail(msg = "Failed to obtain response:");
     }
+
     // Test the deletePet resource
     req = new;
     // Send a request to the pet store service
-    resp = check httpEndpoint->delete("/pet/1", req);
-    test:assertEquals(resp.statusCode, 200, msg =
-        "pet store service didnot respond with 200 OK signal");
-    expectedOutputString = "Deleted pet data successfully : Pet ID = 1";
-    // Assert the response message payload string
-    var receivedPayload4 = resp.getTextPayload();
-    match receivedPayload4 {
-        string receivedString => {
-            test:assertEquals(receivedString, expectedOutputString, msg =
-                "Reponse message not matched");
+    resp = httpEndpoint->delete("/pet/1", req);
+    if (resp is http:Response) {
+        test:assertEquals(resp.statusCode, 200, msg =
+            "pet store service didnot respond with 200 OK signal");
+        expectedOutputString = "Deleted pet data successfully : Pet ID = 1";
+        // Assert the response message payload string
+        var receivedPayload4 = resp.getTextPayload();
+        if (receivedPayload4 is string) {
+            test:assertEquals(receivedPayload4, expectedOutputString, msg =
+                    "Reponse message not matched");
         }
-        error|() => {
-            return;
-        }
+    } else {
+        test:assertFail(msg = "Failed to obtain response:");
     }
 }
