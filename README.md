@@ -4,7 +4,7 @@
 [OpenAPI Specification](https://swagger.io/specification/) (formerly called the Swagger Specification) is a specification that creates RESTful contract for APIs, detailing all of its resources and operations in a human and machine-readable format for easy development, discovery, and integration.
 The Swagger to Ballerina Code Generator can take existing Swagger definition files and generate Ballerina services from them.
 
-> This guide walks you through building a RESTful Ballerina web service using Swagger / OpenAPI Specification.
+> This guide walks you through building a RESTful Ballerina web service using the Swagger / OpenAPI version 2.0.0 specification.
 
 The following are the sections available in this guide.
 
