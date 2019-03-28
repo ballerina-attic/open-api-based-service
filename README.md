@@ -248,7 +248,7 @@ Next we need to implement the business logic in the `ballerina_petstore_impl.bal
 
 ### Implement the business logic for petstore 
 
-Now we have the Ballerina web service for the give `petstore.json` OpenApi file. Next task is to implement the business logic for functionality of each resource. The Ballerina OpenAPi generator has generated `ballerina_petstore_impl.bal` file inside the `open-api-based-service/guide/petstore`. We need to fill the `ballerina_petstore_impl.bal` as per the requirement. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
+Now we have the Ballerina web service for the given `petstore.json` OpenAPI file. Next task is to implement the business logic for functionality of each resource. The Ballerina OpenAPI generator has generated `ballerina_petstore_impl.bal` file inside the `open-api-based-service/guide/petstore` directory. We need to fill the `ballerina_petstore_impl.bal` as per the requirement. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
 
 ```ballerina
 import ballerina/http;
