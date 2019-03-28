@@ -74,7 +74,7 @@ The scenario that we use throughout this guide will be based on the [petstore.js
 }
 ```
 
-NOTE :  The above OpenAPI definition is only the basic structure. You can find the complete OpenAPI definition in [petstore.json](guide/petstore.json) file.
+NOTE :  The above OpenAPI definition is only the basic structure. You can find the complete OpenAPI definition in the [petstore.json](guide/petstore.json) file.
 
 
 ### Create the project structure
