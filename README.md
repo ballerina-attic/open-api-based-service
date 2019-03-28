@@ -38,7 +38,7 @@ You'll build a RESTful web service using an OpenAPI specification. This guide wi
 > If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping  "Implementation" section.
 
 ### Understanding the OpenAPI specification
-The scenario that we use throughout this guide will base on [petstore.json](guide/petstore.json) OpenApi specification. The OpenAPI specification contains all the required details about the pet store RESTful API. Additionally, You can use the Api Designer view in Ballerina vscode extension to create and edit OpenAPI files. 
+The scenario that we use throughout this guide will be based on the [petstore.json](guide/petstore.json) OpenAPI specification. The OpenAPI specification contains all the required details about the pet store RESTful API. Additionally, You can use the API Designer view in Ballerina VSCode extension to create and edit OpenAPI files. 
 
 #### Basic structure of petstore OpenAPI specification
 ```json
