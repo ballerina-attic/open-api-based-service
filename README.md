@@ -95,7 +95,7 @@ open-api-based-service
 
 ### Genarate the web service from the OpenAPI definition
 
-Ballerina language is capable of understanding the OpenAPI specifications. We can easily generate the web service just by typing the following command structure in the terminal.
+Ballerina language is capable of understanding OpenAPI specifications. We can easily generate the web service just by typing the following command in the terminal.
 ```
 ballerina openaapi gen-service <openApiFile> [-o <output directory name>] [-m <module name>] 
 ```
