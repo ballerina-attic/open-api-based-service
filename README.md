@@ -101,7 +101,7 @@ Ballerina language is capable of understanding OpenAPI specifications. Execute t
 ballerina openaapi gen-service <openApiFile> [-o <output directory name>] [-m <module name>] 
 ```
 
-For our pet store service we need to run the following command from the `/guide` in sample root directory(location where you have the petstore.json file) to generate the Ballerina service from the OpenAPI definition
+Navigate to the `/guide` directory in the sample root directory (i.e., the location where you have the `petstore.json` file) and execute the below command. This generates the Ballerina service for the pet store service from the OpenAPI definition.
 
 ```bash 
 $ ballerina openapi gen-service petstore.json -m petstore
