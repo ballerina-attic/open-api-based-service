@@ -107,7 +107,7 @@ Navigate to the `/guide` directory in the sample root directory (i.e., the locat
 $ ballerina openapi gen-service petstore.json -m petstore
 ```
 
-The `-m` flag indicates the module name and `-o` flag indicates the file destination for the web service. These parameters are optional and can be used to have a customized module name and file location for the project.
+The `-m` flag denotes the module name and the `-o` flag indicates the destination of the file corresponding to the web service. These parameters are optional and can be used to have a customized module name and file location for the project.
 
 #### Generated ballerina modules 
 After running the above command, the pet store web service will be auto-generated. Now the module structure is similar to the following,
