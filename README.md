@@ -16,7 +16,7 @@ The following are the sections available in this guide.
 - [Observability](#observability)
 
 ## What you'll build
-You'll build a RESTful web service using an OpenAPI specification. This guide will walk you through building a pet store server from an OpenAPI definition. The pet store service will have RESTful POST,PUT,GET and DELETE methods to handle pet data.
+You will build a RESTful web service using the OpenAPI specification. This guide will walk you through building a pet store server from an OpenAPI definition. The pet store service will have the RESTful POST, PUT, GET and DELETE methods to handle pet data.
 
 &nbsp; 
 ![alt text](/images/OpenAPI.svg)
