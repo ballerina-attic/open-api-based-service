@@ -23,7 +23,7 @@ listener http:Listener ep0 = new(9090);
 
 @openapi:ServiceInfo { 
     title: "Ballerina Petstore",
-    description: "This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
+    description: "This is a sample Petstore server. This uses openapi definitions to create the ballerina service",
     serviceVersion: "1.0.0",
     termsOfService: "http://ballerina.io/terms/",
     contact: {name: "", email: "samples@ballerina.io", url: ""},

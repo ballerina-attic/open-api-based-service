@@ -73,8 +73,10 @@ public function getPetById(http:Request req, string petId) returns http:Response
     }
     else {
         // Set the pet data as the payload and send back the response
-        var payload = io:sprintf("%s", petData[petId]);
-        resp.setTextPayload(untaint payload);
+        var payload = json.convert(petData[petId]);
+        if (payload is json) {
+            resp.setJsonPayload(untaint payload);
+        }
     }
     return resp;
 }
