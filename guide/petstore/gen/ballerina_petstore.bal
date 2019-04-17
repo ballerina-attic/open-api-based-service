@@ -17,13 +17,13 @@
 import ballerina/log;
 import ballerina/http;
 import ballerina/mime;
-import ballerina/swagger;
+import ballerina/openapi;
 
 listener http:Listener ep0 = new(9090);
 
-@swagger:ServiceInfo { 
+@openapi:ServiceInfo { 
     title: "Ballerina Petstore",
-    description: "This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
+    description: "This is a sample Petstore server. This uses openapi definitions to create the ballerina service",
     serviceVersion: "1.0.0",
     termsOfService: "http://ballerina.io/terms/",
     contact: {name: "", email: "samples@ballerina.io", url: ""},
@@ -40,7 +40,7 @@ listener http:Listener ep0 = new(9090);
 }
 service BallerinaPetstore on ep0 {
 
-    @swagger:ResourceInfo {
+    @openapi:ResourceInfo {
         summary: "Update an existing pet",
         tags: ["pet"]
     }
@@ -58,7 +58,7 @@ service BallerinaPetstore on ep0 {
         }
     }
 
-    @swagger:ResourceInfo {
+    @openapi:ResourceInfo {
         summary: "Add a new pet to the store",
         tags: ["pet"]
     }
@@ -76,7 +76,7 @@ service BallerinaPetstore on ep0 {
         }
     }
 
-    @swagger:ResourceInfo {
+    @openapi:ResourceInfo {
         summary: "Find pet by ID",
         tags: ["pet"],
         description: "Returns a single pet",
@@ -103,7 +103,7 @@ service BallerinaPetstore on ep0 {
         }
     }
 
-    @swagger:ResourceInfo {
+    @openapi:ResourceInfo {
         summary: "Deletes a pet",
         tags: ["pet"],
         parameters: [

@@ -2,7 +2,7 @@
 
 # Swagger / OpenAPI
 [OpenAPI Specification](https://swagger.io/specification/) (formerly called the Swagger Specification) is a specification that creates RESTful contract for APIs, detailing all of its resources and operations in a human and machine-readable format for easy development, discovery, and integration.
-The Swagger to Ballerina Code Generator can take existing Swagger definition files and generate Ballerina services from them.
+The OpenAPI to Ballerina Code Generator can take existing OpenAPI definition files and generate Ballerina services from them.
 
 > This guide walks you through building a RESTful Ballerina web service using the Swagger / OpenAPI 2.0 specification.
 
@@ -38,7 +38,7 @@ You'll build an RESTful web service using an OpenAPI / Swagger specification. Th
 > If you want to skip the basics, you can download the git repo and directly move to the "Testing" section by skipping  "Implementation" section.
 
 ### Understand the Swagger / OpenAPI specification
-The scenario that we use throughout this guide will base on a [petstore.json](guide/petstore.json) swagger specification. The OpenAPI / Swagger specification contains all the required details about the pet store RESTful API. Additionally, You can use the Swagger view in Ballerina Composer to create and edit OpenAPI / Swagger files. 
+The scenario that we use throughout this guide will base on a [petstore.json](guide/petstore.json) OpenAPI specification. The OpenAPI / Swagger specification contains all the required details about the pet store RESTful API. Additionally, You can use the Swagger view in Ballerina Composer to create and edit OpenAPI / Swagger files.
 
 #### Basic structure of petstore Swagger/OpenAPI specification
 ```json
@@ -97,13 +97,13 @@ open-api-based-service
 
 Ballerina language is capable of understanding the Swagger / OpenAPI specifications. We can easily generate the web service just by typing the following command structure in the terminal.
 ```
-ballerina swagger mock <swaggerFile> [-o <output directory name>] [-m <module name>] 
+ballerina openapi gen-service <OpenAPIFile> [-o <output directory name>] [-m <module name>] 
 ```
 
 For our pet store service we need to run the following command from the `/guide` in sample root directory(location where you have the petstore.json file) to generate the Ballerina service from the OpenAPI / Swagger definition
 
 ```bash 
-$ ballerina swagger mock petstore.json -m petstore
+$ ballerina openapi gen-service petstore.json -m petstore
 ```
 
 The `-m` flag indicates the module name and `-o` flag indicates the file destination for the web service. These parameters are optional and can be used to have a customized module name and file location for the project.
@@ -132,13 +132,13 @@ After running the above command, the pet store web service will be auto-generate
 import ballerina/http;
 import ballerina/log;
 import ballerina/mime;
-import ballerina/swagger;
+import ballerina/openapi;
 
 listener http:Listener ep0 = new(9090);
 
-@swagger:ServiceInfo {
+@openapi:ServiceInfo {
     title: "Ballerina Petstore",
-    description: "This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
+    description: "This is a sample Petstore server. This uses openapi definitions to create the ballerina service",
     serviceVersion: "1.0.0",
     termsOfService: "http://ballerina.io/terms/",
     contact: {name: "", email: "samples@ballerina.io", url: ""},
@@ -153,7 +153,7 @@ listener http:Listener ep0 = new(9090);
 }
 service BallerinaPetstore on ep0 {
 
-    @swagger:ResourceInfo {
+    @openapi:ResourceInfo {
         summary: "Update an existing pet",
         tags: ["pet"]
     }
@@ -171,7 +171,7 @@ service BallerinaPetstore on ep0 {
         }
     }
 
-    @swagger:ResourceInfo {
+    @openapi:ResourceInfo {
         summary: "Add a new pet to the store",
         tags: ["pet"]
     }
@@ -189,7 +189,7 @@ service BallerinaPetstore on ep0 {
         }
     }
 
-    @swagger:ResourceInfo {
+    @openapi:ResourceInfo {
         summary: "Find pet by ID",
         tags: ["pet"],
         description: "Returns a single pet",
@@ -216,7 +216,7 @@ service BallerinaPetstore on ep0 {
         }
     }
 
-    @swagger:ResourceInfo {
+    @openapi:ResourceInfo {
         summary: "Deletes a pet",
         tags: ["pet"],
         parameters: [
@@ -248,7 +248,7 @@ Next we need to implement the business logic in the `ballerina_petstore_impl.bal
 
 ### Implement the business logic for petstore 
 
-Now we have the Ballerina web service for the give `petstore.json` Swagger file. Next task is to implement the business logic for functionality of each resource. The Ballerina Swagger generator has generated `ballerina_petstore_impl.bal` file inside the `open-api-based-service/guide/petstore`. We need to fill the `ballerina_petstore_impl.bal` as per the requirement. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
+Now we have the Ballerina web service for the give `petstore.json` OpenAPI file. Next task is to implement the business logic for functionality of each resource. The Ballerina OpenAPI generator has generated `ballerina_petstore_impl.bal` file inside the `open-api-based-service/guide/petstore`. We need to fill the `ballerina_petstore_impl.bal` as per the requirement. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
 
 ```ballerina
 import ballerina/http;
@@ -309,8 +309,10 @@ public function getPetById(http:Request req, string petId) returns http:Response
     }
     else {
         // Set the pet data as the payload and send back the response
-        var payload = io:sprintf("%s", petData[petId]);
-        resp.setTextPayload(untaint payload);
+        var payload = json.convert(petData[petId]);
+        if (payload is json) {
+            resp.setJsonPayload(untaint payload);
+        }
     }
     return resp;
 }
@@ -445,7 +447,7 @@ listener http:Listener ep0 = new(9090);
 
 // 'petData' Map definition
 
-// '@swagger:ServiceInfo' annotation
+// '@openapi:ServiceInfo' annotation
 
 @http:ServiceConfig {
     basePath:"/v1"
@@ -513,7 +515,7 @@ listener http:Listener ep0 = new(9090);
 
 // 'petData' Map definition
 
-// '@swagger:ServiceInfo' annotation
+// '@openapi:ServiceInfo' annotation
 
 @http:ServiceConfig {
     basePath:"/v1"

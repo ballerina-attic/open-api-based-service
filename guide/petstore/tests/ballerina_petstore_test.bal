@@ -16,6 +16,7 @@
 
 import ballerina/http;
 import ballerina/test;
+import ballerina/io;
 
 // Create a connection with petStore service endpoint
 http:Client httpEndpoint = new("http://localhost:9090/v1");
@@ -36,7 +37,7 @@ function testPetStore() {
     var resp = httpEndpoint->post("/pet", req);
     if (resp is http:Response) {
         test:assertEquals(resp.statusCode, 200, msg =
-            "pet store service didnot respond with 200 OK signal");
+            "pet store service did not respond with 200 OK signal");
         expectedOutputString = "Pet added successfully : Pet ID = 1";
         // Assert the response message payload string
         var receivedPayload1 = resp.getTextPayload();
@@ -55,7 +56,7 @@ function testPetStore() {
     resp = httpEndpoint->put("/pet", req);
     if (resp is http:Response) {
         test:assertEquals(resp.statusCode, 200, msg =
-            "pet store service didnot respond with 200 OK signal");
+            "pet store service did not respond with 200 OK signal");
         expectedOutputString = "Pet updated successfully : Pet ID = 1";
         // Assert the response message payload string
         var receivedPayload2 = resp.getTextPayload();
@@ -73,11 +74,12 @@ function testPetStore() {
     resp = httpEndpoint->get("/pet/1");
     if (resp is http:Response) {
         test:assertEquals(resp.statusCode, 200, msg =
-            "pet store service didnot respond with 200 OK signal");
+            "pet store service did not respond with 200 OK signal");
         // Assert the response message payload string
         var receivedPayload3 = resp.getJsonPayload();
-        if (receivedPayload3 is string) {
-            test:assertEquals(receivedPayload3, expectedOutputString, msg =
+        if (receivedPayload3 is json) {
+            expectedOutputString = "{\"id\":\"1\", \"category\":\"dog-updated\", \"name\":\"Updated-doggie\"}";
+            test:assertEquals(receivedPayload3.toString(), expectedOutputString, msg =
                     "Reponse message not matched");
         }
     } else {
@@ -90,7 +92,7 @@ function testPetStore() {
     resp = httpEndpoint->delete("/pet/1", req);
     if (resp is http:Response) {
         test:assertEquals(resp.statusCode, 200, msg =
-            "pet store service didnot respond with 200 OK signal");
+            "pet store service did not respond with 200 OK signal");
         expectedOutputString = "Deleted pet data successfully : Pet ID = 1";
         // Assert the response message payload string
         var receivedPayload4 = resp.getTextPayload();
