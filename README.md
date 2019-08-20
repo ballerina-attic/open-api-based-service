@@ -97,13 +97,13 @@ open-api-based-service
 
 Ballerina language is capable of understanding the Swagger / OpenAPI specifications. We can easily generate the web service just by typing the following command structure in the terminal.
 ```
-ballerina openapi gen-service <OpenAPIFile> [-o <output directory name>] [-m <module name>] 
+ballerina openapi gen-service <moduleName>:<serviceName> <OpenAPIFile> [-o <output directory name>]
 ```
 
 For our pet store service we need to run the following command from the `/guide` in sample root directory(location where you have the petstore.json file) to generate the Ballerina service from the OpenAPI / Swagger definition
 
 ```bash 
-$ ballerina openapi gen-service petstore.json -m petstore
+$ ballerina openapi gen-service petstore:petstoreservice petstore.json
 ```
 
 The `-m` flag indicates the module name and `-o` flag indicates the file destination for the web service. These parameters are optional and can be used to have a customized module name and file location for the project.
@@ -114,133 +114,70 @@ After running the above command, the pet store web service will be auto-generate
 ```
 └── open-api-based-service
     └── guide
-        ├── petstore
-        │   ├── ballerina_petstore_impl.bal
-        │   ├── gen
-        │   │   ├── ballerina_petstore.bal
-        │   │   └── schema.bal
+        ├── src
+        │   ├── petstore
+        │   │   ├── resources
+        │   │   ├── petstoreservice.bal
+        │   │   └── schema.bal
         │   └── tests
-        │       └── ballerina_petstore_test.bal
         └── petstore.json
 ```
 
-`ballerina_petstore.bal` is the generated Ballerina code of the pet store service and `ballerina_petstore_impl.bal` is the generated mock implementation for the pet store functions.
+`petstoreservice.bal` is the generated Ballerina code of the pet store service.
 
 #### Generated `ballerina_petstore.bal` file
   
-```ballerina
+```
 import ballerina/http;
 import ballerina/log;
 import ballerina/mime;
 import ballerina/openapi;
 
-listener http:Listener ep0 = new(9090);
+listener http:Listener ep0 = new(9090, config = {host: "localhost"});
 
 @openapi:ServiceInfo {
-    title: "Ballerina Petstore",
-    description: "This is a sample Petstore server. This uses openapi definitions to create the ballerina service",
-    serviceVersion: "1.0.0",
-    termsOfService: "http://ballerina.io/terms/",
-    contact: {name: "", email: "samples@ballerina.io", url: ""},
-    license: {name: "Apache 2.0", url: "http://www.apache.org/licenses/LICENSE-2.0.html"},
-    tags: [
-        {name: "pet", description: "Everything about your Pets", externalDocs: {description: "Find out more", url: "http://ballerina.io"}}
-    ],
-    externalDocs: {description: "Find out more about Ballerina", url: "http://ballerina.io"}
+    contract: "/Users/imeshchandrasiri/Documents/ballerina-ex/petstore/src/petstore/resources/petstore.json",
+    tags: [ ]
 }
 @http:ServiceConfig {
     basePath: "/v1"
 }
-service BallerinaPetstore on ep0 {
+service petstoreservice on ep0 {
 
-    @openapi:ResourceInfo {
-        summary: "Update an existing pet",
-        tags: ["pet"]
-    }
-    @http:ResourceConfig { 
+    @http:ResourceConfig {
         methods:["PUT"],
-        path:"/pet",
-        body:"petDetails"
+        path:"/pet", 
+        body:"pet"
     }
-    resource function updatePet (http:Caller outboundEp, http:Request req, Pet petDetails) {
-        http:Response res = updatePet(req, petDetails);
-        var result = outboundEp->respond(res);
+    resource function updatepet (http:Caller outboundEp, http:Request _Req, Pet pet ) returns error? {
 
-        if (result is error) {
-            log:printError("Error while responding", err = result);
-        }
     }
 
-    @openapi:ResourceInfo {
-        summary: "Add a new pet to the store",
-        tags: ["pet"]
-    }
-    @http:ResourceConfig { 
+    @http:ResourceConfig {
         methods:["POST"],
-        path:"/pet",
-        body:"petDetails"
+        path:"/pet", 
+        body:"pet"
     }
-    resource function addPet (http:Caller outboundEp, http:Request req, Pet petDetails) {
-        http:Response res = addPet(req, petDetails);
-        var result = outboundEp->respond(res);
+    resource function addpet (http:Caller outboundEp, http:Request _Req, Pet pet ) returns error? {
 
-        if (result is error) {
-            log:printError("Error while responding", err = result);
-        }
     }
 
-    @openapi:ResourceInfo {
-        summary: "Find pet by ID",
-        tags: ["pet"],
-        description: "Returns a single pet",
-        parameters: [
-            {
-                name: "petId",
-                inInfo: "path",
-                description: "ID of pet to return", 
-                required: true, 
-                allowEmptyValue: ""
-            }
-        ]
-    }
-    @http:ResourceConfig { 
+    @http:ResourceConfig {
         methods:["GET"],
         path:"/pet/{petId}"
     }
-    resource function getPetById (http:Caller outboundEp, http:Request req, string petId) {
-        http:Response res = getPetById(req, petId);
-        var result = outboundEp->respond(res);
+    resource function getpetbyid (http:Caller outboundEp, http:Request _Req, string petId ) returns error? {
 
-        if (result is error) {
-            log:printError("Error while responding", err = result);
-        }
     }
 
-    @openapi:ResourceInfo {
-        summary: "Deletes a pet",
-        tags: ["pet"],
-        parameters: [
-            {
-                name: "petId",
-                inInfo: "path",
-                description: "Pet id to delete", 
-                required: true, 
-                allowEmptyValue: ""
-            }
-        ]
-    }
-    @http:ResourceConfig { 
+    @http:ResourceConfig {
         methods:["DELETE"],
         path:"/pet/{petId}"
     }
-    resource function deletePet (http:Caller outboundEp, http:Request req, string petId) {
-        http:Response res = deletePet(req, untaint petId);
-        var result = outboundEp->respond(res);
+    resource function deletepet (http:Caller outboundEp, http:Request _Req, string petId ) returns error? {
 
-        if (result is error) {
-            log:printError("Error while responding", err = result);
-        }
     }
+
 }
 ```
 
@@ -248,7 +185,7 @@ Next we need to implement the business logic in the `ballerina_petstore_impl.bal
 
 ### Implement the business logic for petstore 
 
-Now we have the Ballerina web service for the give `petstore.json` OpenAPI file. Next task is to implement the business logic for functionality of each resource. The Ballerina OpenAPI generator has generated `ballerina_petstore_impl.bal` file inside the `open-api-based-service/guide/petstore`. We need to fill the `ballerina_petstore_impl.bal` as per the requirement. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
+Now we have the Ballerina web service for the give `petstore.json` OpenAPI file. Next task is to implement the business logic for functionality of each resource. Create a seperate ballerina file named `ballerina_petstore_impl.bal` and use the following sample as the basic implementation of the business logic. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
 
 ```ballerina
 import ballerina/http;
