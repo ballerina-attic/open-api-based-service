@@ -77,23 +77,31 @@ The scenario that we use throughout this guide will base on a [petstore.json](gu
 NOTE :  The above OpenAPI / Swagger definition is only the basic structure. You can find the complete OpenAPI / Swagger definition in [petstore.json](guide/petstore.json) file.
 
 
-### Create the project structure
+### Create a new project
 
-Ballerina is capable of maintaining custom project structures depending on the requirement. We use following project structure in this project to follow the guide.
-```
-open-api-based-service
-  └── guide
-	 └── petstore.json  
-```
+- navigate to your workspace and run ballerina new project command to create a new project. For this guide we use `guide` as the project name.
 
-- Create the above directories in your local machine and also copy the [petstore.json](guide/petstore.json) file to the open-api-based-service directory.
-
-- Then open the terminal and navigate to `open-api-based-service/guide` and run Ballerina project initializing toolkit.
 ```bash
-   $ ballerina init
+  $ ballerina new guide
 ```
 
-### Genarate the web service from the Swagger / OpenAPI definition
+Ballerina will create the required project structure according to the command. That will be looks like below.
+
+```
+guide
+  ├── Ballerina.toml
+  ├── src
+  └── .gitignore  
+```
+- navigate into the project
+  
+```bash
+  $ cd guide
+```
+
+- Copy the [petstore.json](guide/petstore.json) file to your local machine. for this tutorial we put it in to project location.
+
+### Generate the web service from the Swagger / OpenAPI definition
 
 Ballerina language is capable of understanding the Swagger / OpenAPI specifications. We can easily generate the web service just by typing the following command structure in the terminal.
 ```
@@ -112,31 +120,32 @@ The `-m` flag indicates the module name and `-o` flag indicates the file destina
 After running the above command, the pet store web service will be auto-generated. Now the module structure is similar to the following,
 
 ```
-└── open-api-based-service
-    └── guide
-        ├── src
-        │   ├── petstore
-        │   │   ├── resources
-        │   │   ├── petstoreservice.bal
-        │   │   └── schema.bal
-        │   └── tests
-        └── petstore.json
+guide
+  ├── Ballerina.toml
+  ├── petstore.json
+  ├── .gitignore
+  └── src
+      └── petstore
+          ├── Module.md
+          ├── petstoreservice.bal
+          ├── resources
+          |   └── petstore.json
+          ├── schema.bal
+          └── tests
 ```
 
 `petstoreservice.bal` is the generated Ballerina code of the pet store service.
 
-#### Generated `ballerina_petstore.bal` file
+#### Generated `petstoreservice.bal` file
   
-```
+```ballerina
 import ballerina/http;
-import ballerina/log;
-import ballerina/mime;
 import ballerina/openapi;
 
 listener http:Listener ep0 = new(9090, config = {host: "localhost"});
 
 @openapi:ServiceInfo {
-    contract: "/Users/imeshchandrasiri/Documents/ballerina-ex/petstore/src/petstore/resources/petstore.json",
+    contract: "resources/petstore.json",
     tags: [ ]
 }
 @http:ServiceConfig {
@@ -149,7 +158,7 @@ service petstoreservice on ep0 {
         path:"/pet", 
         body:"pet"
     }
-    resource function updatepet (http:Caller outboundEp, http:Request _Req, Pet pet ) returns error? {
+    resource function updatePet(http:Caller caller, http:Request req, Pet pet ) returns error? {
 
     }
 
@@ -158,7 +167,7 @@ service petstoreservice on ep0 {
         path:"/pet", 
         body:"pet"
     }
-    resource function addpet (http:Caller outboundEp, http:Request _Req, Pet pet ) returns error? {
+    resource function addPet(http:Caller caller, http:Request req, Pet pet ) returns error? {
 
     }
 
@@ -166,7 +175,7 @@ service petstoreservice on ep0 {
         methods:["GET"],
         path:"/pet/{petId}"
     }
-    resource function getpetbyid (http:Caller outboundEp, http:Request _Req, string petId ) returns error? {
+    resource function getPetById(http:Caller caller, http:Request req, string petId) returns error? {
 
     }
 
@@ -174,18 +183,18 @@ service petstoreservice on ep0 {
         methods:["DELETE"],
         path:"/pet/{petId}"
     }
-    resource function deletepet (http:Caller outboundEp, http:Request _Req, string petId ) returns error? {
+    resource function deletePet(http:Caller caller, http:Request req, string petId) returns error? {
 
     }
 
 }
 ```
 
-Next we need to implement the business logic in the `ballerina_petstore_impl.bal` file.
+Next we need to implement the business logic in the `petstoreservice.bal` file.
 
 ### Implement the business logic for petstore 
 
-Now we have the Ballerina web service for the give `petstore.json` OpenAPI file. Next task is to implement the business logic for functionality of each resource. Create a seperate ballerina file named `ballerina_petstore_impl.bal` and use the following sample as the basic implementation of the business logic. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
+Now we have the Ballerina web service for the give `petstore.json` OpenAPI file. Next task is to implement the business logic for functionality of each resource. Create a seperate ballerina file named `petstoreservice_impl.bal` and use the following sample as the basic implementation of the business logic. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
 
 ```ballerina
 import ballerina/http;
@@ -281,44 +290,45 @@ With that, we have completed the implementation of the pet store web service.
 ### Invoking the petstore service 
 
 You can run the RESTful service that you developed above, in your local environment. Open your terminal and navigate to `open-api-based-service/guide`, and execute the following command.
-```
-$ ballerina run petstore
+
+```bash
+  $ ballerina run petstore
 ```
 
 - You can test the functionality of the pet store RESTFul service by sending HTTP request for each operation. For example, we have used the curl commands to test each operation of pet store as follows. 
 
 **Add a new pet** 
-```
-curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
-"http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
+```bash
+  $ curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
+    "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
 
-Output :  
-Pet added successfully : Pet ID = 1
+  Output :  
+  Pet added successfully : Pet ID = 1
 ```
 
 **Retrieve pet data** 
-```
-curl "http://localhost:9090/v1/pet/1"
+```bash
+  $ curl "http://localhost:9090/v1/pet/1"
 
-Output:
-{"id":"1","category":"dog","name":"doggie"}
+  Output:
+  {"id":"1","category":"dog","name":"doggie"}
 ```
 
 **Update pet data** 
-```
-curl -X PUT -d '{"id":1, "category":"dog-updated", "name":"Updated-doggie"}' \
-"http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
+```bash
+  $ curl -X PUT -d '{"id":1, "category":"dog-updated", "name":"Updated-doggie"}' \
+    "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
 
-Output: 
-Pet details updated successfully : id = 1
+  Output: 
+  Pet details updated successfully : id = 1
 ```
 
 **Delete pet data** 
-```
-curl -X DELETE  "http://localhost:9090/v1/pet/1"
+```bash
+  $ curl -X DELETE  "http://localhost:9090/v1/pet/1"
 
-Output:
-Deleted pet data successfully: Pet ID = 1
+  Output:
+  Deleted pet data successfully: Pet ID = 1
 ```
 
 ### Writing Unit Tests 
@@ -394,24 +404,24 @@ service BallerinaPetstore on ep0 {
 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding Docker image using the Docker annotations that you have configured above. Navigate to the `<SAMPLE_ROOT>/guide/` folder and run the following command.  
-```
-  $ballerina build petstore
+```bash
+  $ ballerina build petstore
   
   Run following command to start Docker container: 
   docker run -d -p 9090:9090 ballerina.guides.io/petstore:v1.0
 ```
 - Once you successfully build the Docker image, you can run it with the `` docker run`` command that is shown in the previous step.  
 
-```   
-    docker run -d -p 9090:9090 ballerina.guides.io/petstore:v1.0
+```bash
+  $ docker run -d -p 9090:9090 ballerina.guides.io/petstore:v1.0
 ```
     Here we run the Docker image with flag`` -p <host_port>:<container_port>`` so that we  use  the host port 9090 and the container port 9090. Therefore you can access the service through the host port. 
 
 - Verify Docker container is running with the use of `` $ docker ps``. The status of the Docker container should be shown as 'Up'. 
 - You can access the service using the same curl commands that we've used above. 
  
-```
-    curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
+```bash
+  $ curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
     "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"  
 ```
 
@@ -470,11 +480,11 @@ If you are using Minikube, you need to set a couple of additional attributes to 
 - Now you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the service file that we developed above and it will create an executable binary out of that. 
 This will also create the corresponding Docker image and the Kubernetes artifacts using the Kubernetes annotations that you have configured above.
   
-```
-  $ballerina build petstore
+```bash
+  $ ballerina build petstore
   
   Run following command to deploy kubernetes artifacts:  
-  kubectl apply -f ./target/petstore/kubernetes
+  $ kubectl apply -f ./target/petstore/kubernetes
  
 ```
 
@@ -482,29 +492,28 @@ This will also create the corresponding Docker image and the Kubernetes artifact
 - Also the Kubernetes artifacts related our service, will be generated in `` ./target/petstore/kubernetes``. 
 - Now you can create the Kubernetes deployment using:
 
-```
- $ kubectl apply -f ./target/petstore/kubernetes 
-   deployment.extensions "ballerina-guides-petstore" created
-   ingress.extensions "ballerina-guides-petstore" created
-   service "ballerina-guides-petstore" created
-
+```bash
+  $ kubectl apply -f ./target/petstore/kubernetes 
+    deployment.extensions "ballerina-guides-petstore" created
+    ingress.extensions "ballerina-guides-petstore" created
+    service "ballerina-guides-petstore" created
 ```
 - You can verify Kubernetes deployment, service and ingress are running properly, by using following Kubernetes commands. 
-```
-$kubectl get service
-$kubectl get deploy
-$kubectl get pods
-$kubectl get ingress
 
+```bash
+$ kubectl get service
+$ kubectl get deploy
+$ kubectl get pods
+$ kubectl get ingress
 ```
 
 - If everything is successfully deployed, you can invoke the service either via Node port or ingress. 
 
 Node Port:
  
-```
-curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
-"http://<Minikube_host_IP>:<Node_Port>/v1/pet/" -H "Content-Type:application/json"  
+```bash
+  $ curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
+    "http://<Minikube_host_IP>:<Node_Port>/v1/pet/" -H "Content-Type:application/json"  
 ```
 If you are using Minikube, you should use the IP address of the Minikube cluster obtained by running the `minikube ip` command. The port should be the node port given when running the `kubectl get services` command.
 
@@ -517,9 +526,9 @@ Add `/etc/hosts` entry to match hostname. For Minikube, the IP address should be
 
 Access the service 
 
-``` 
-curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
-"http://ballerina.guides.io/v1/pet/" -H "Content-Type:application/json" 
+```bash
+  $ curl -X POST -d '{"id":1, "category":"dog", "name":"doggie"}' \
+    "http://ballerina.guides.io/v1/pet/" -H "Content-Type:application/json" 
     
 ```
 
@@ -551,7 +560,7 @@ You can monitor ballerina services using in built tracing capabilities of Baller
 Follow the following steps to use tracing with Ballerina.
 
 - You can add the following configurations for tracing. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described above.
-```
+```conf
    [b7a.observability]
 
    [b7a.observability.tracing]
@@ -590,7 +599,7 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
 
 - You can add the following configurations for metrics. Note that these configurations are optional if you already have the basic configuration in `ballerina.conf` as described under `Observability` section.
 
-```
+```conf
    [b7a.observability.metrics]
    enabled=true
    reporter="prometheus"
@@ -601,7 +610,7 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
 ```
 
 - Create a file `prometheus.yml` inside `/tmp/` location. Add the below configurations to the `prometheus.yml` file.
-```
+```yaml
    global:
      scrape_interval:     15s
      evaluation_interval: 15s
@@ -615,13 +624,13 @@ Follow the below steps to set up Prometheus and view metrics for Ballerina restf
    NOTE : Replace `172.17.0.1` if your local Docker IP differs from `172.17.0.1`
    
 - Run the Prometheus Docker image using the following command
-```
+```bash
    $ docker run -p 19090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml \
    prom/prometheus
 ```
 
 - Navigate to `open-api-based-service/guide` and run the restful-service using the following command
-```
+```bash
   $ ballerina run --config petstore/ballerina.conf petstore
 ```
 
@@ -640,7 +649,7 @@ NOTE:  Ballerina will by default have following metrics for HTTP server connecto
 Ballerina has a log module for logging to the console. You can import ballerina/log module and start logging. The following section will describe how to search, analyze, and visualize logs in real time using Elastic Stack.
 
 - Start the Ballerina Service with the following command from `open-api-based-service/guide`
-```
+```bash
    $ nohup ballerina run petstore &>> ballerina.log&
 ```
    NOTE: This will write the console log to the `ballerina.log` file in the `open-api-based-service/guide` directory
@@ -648,7 +657,7 @@ Ballerina has a log module for logging to the console. You can import ballerina/
 - Start Elasticsearch using the following command
 
 - Start Elasticsearch using the following command
-```
+```bash
    $ docker run -p 9200:9200 -p 9300:9300 -it -h elasticsearch --name \
    elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.2.2 
 ```
@@ -656,7 +665,7 @@ Ballerina has a log module for logging to the console. You can import ballerina/
    NOTE: Linux users might need to run `sudo sysctl -w vm.max_map_count=262144` to increase `vm.max_map_count` 
    
 - Start Kibana plugin for data visualization with Elasticsearch
-```
+```bash
    $ docker run -p 5601:5601 -h kibana --name kibana --link \
    elasticsearch:elasticsearch docker.elastic.co/kibana/kibana:6.2.2     
 ```
@@ -664,7 +673,7 @@ Ballerina has a log module for logging to the console. You can import ballerina/
 - Configure logstash to format the ballerina logs
 
 i) Create a file named `logstash.conf` with the following content
-```
+```conf
 input {  
  beats{ 
      port => 5044 
@@ -693,7 +702,7 @@ ii) Save the above `logstash.conf` inside a directory named as `{SAMPLE_ROOT}\pi
      
 iii) Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name
      
-```
+```bash
 $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
 -it --rm -v ~/{SAMPLE_ROOT}/pipeline:/usr/share/logstash/pipeline/ \
 -p 5044:5044 docker.elastic.co/logstash/logstash:6.2.2
@@ -702,7 +711,7 @@ $ docker run -h logstash --name logstash --link elasticsearch:elasticsearch \
  - Configure filebeat to ship the ballerina logs
     
 i) Create a file named `filebeat.yml` with the following content
-```
+```yaml
 filebeat.prospectors:
 - type: log
   paths:
@@ -716,7 +725,7 @@ ii) Save the above `filebeat.yml` inside a directory named as `{SAMPLE_ROOT}\fil
         
 iii) Start the logstash container, replace the `{SAMPLE_ROOT}` with your directory name
      
-```
+```bash
 $ docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml \
 -v {SAMPLE_ROOT}/guide.restful_service/restful_service/ballerina.log:/usr/share\
 /filebeat/ballerina.log --link logstash:logstash docker.elastic.co/beats/filebeat:6.2.2
@@ -726,5 +735,3 @@ $ docker run -v {SAMPLE_ROOT}/filebeat/filebeat.yml:/usr/share/filebeat/filebeat
 ```
    http://localhost:5601 
 ```
-  
- 
