@@ -32,10 +32,8 @@ script:
 
   - export PATH=${PATH}:$(pwd)/${DISTRIBUTION_NAME}/bin
 
-  - ballerina version
+  - ballerina --version
 
   - cd guide
 
-  - ballerina init
-
-  - ballerina test
+  - ballerina test -a
