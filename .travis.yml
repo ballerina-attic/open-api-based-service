@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 jdk:
-  - oraclejdk8
+  - openjdk8
   
 script:
   - BALLERINA_VERSION="${VERSION:-1.2.3}"
